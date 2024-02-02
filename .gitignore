@@ -1,1 +1,2 @@
-tests/images/
+images/
+__pycache__/
