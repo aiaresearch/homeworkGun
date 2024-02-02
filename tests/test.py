@@ -28,5 +28,4 @@ def delete_files_in_directory(directory):
                 
     print("All files deleted successfully.")
     
-# Call the function to delete files
 delete_files_in_directory(image_dir)
