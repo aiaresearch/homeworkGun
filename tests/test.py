@@ -16,17 +16,14 @@ for file in os.listdir(image_dir):
         for line in ocr.ocr(os.path.join(image_dir, file), det=True):
             print('recognized text: ', line['text'], 'fact: ', os.path.splitext(file)[0])
 
+# delete generated images
 def delete_files_in_directory(directory):
-    # List all files in the directory
     files = os.listdir(directory)
     
     for file_name in files:
-        # Construct the full path to the file
         file_path = os.path.join(directory, file_name)
         
-        # Check if it's a file and not a directory
     if os.path.isfile(file_path):
-        # Delete the file
         os.remove(file_path)
                 
     print("All files deleted successfully.")

@@ -6,6 +6,7 @@ save_path = r"E:\homeworkGun\tests\images"
 
 # Create a blank image
 width, height = 200, 100
+
 # Draw a number on the image
 def generate_number_image():
     iter = int(input("Enter the number of iterations: "))
