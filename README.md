@@ -13,6 +13,7 @@ This is a repository for an wonderful device that users could ont only fast scan
 ## Technologies
 
 - Python
+- cnOcr
 
 
 # in development...
