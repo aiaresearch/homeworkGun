@@ -1,11 +1,14 @@
 import cnocr
 import os
-import generate
+from generate import generate_number_image
 
 image_dir = r"E:\homeworkGun\tests\images"
 
 # Initialize the OCR model
 ocr = cnocr.CnOcr(rec_model_name='number-densenet_lite_136-fc', det_model_name='en_PP-OCRv3_det')
+
+# Generate images for testing
+generate_number_image()
 
 # start recognition
 for file in os.listdir(image_dir):
@@ -14,25 +17,19 @@ for file in os.listdir(image_dir):
             print('recognized text: ', line['text'], 'fact: ', os.path.splitext(file)[0])
 
 def delete_files_in_directory(directory):
-    try:
-        # List all files in the directory
-        files = os.listdir(directory)
+    # List all files in the directory
+    files = os.listdir(directory)
+    
+    for file_name in files:
+        # Construct the full path to the file
+        file_path = os.path.join(directory, file_name)
         
-        # Iterate through each file
-        for file_name in files:
-            # Construct the full path to the file
-            file_path = os.path.join(directory, file_name)
-            
-            # Check if it's a file and not a directory
-            if os.path.isfile(file_path):
-                # Delete the file
-                os.remove(file_path)
-                print(f"Deleted: {file_path}")
+        # Check if it's a file and not a directory
+    if os.path.isfile(file_path):
+        # Delete the file
+        os.remove(file_path)
                 
-        print("All files deleted successfully.")
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
+    print("All files deleted successfully.")
+    
 # Call the function to delete files
 delete_files_in_directory(image_dir)

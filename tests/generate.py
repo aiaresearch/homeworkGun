@@ -1,5 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 import random
+import os
+
+save_path = r"E:\homeworkGun\tests\images"
 
 # Create a blank image
 width, height = 200, 100
@@ -16,4 +19,5 @@ def generate_number_image():
         x = (width - text_width) / 2
         y = (height - text_height) / 2
         draw.text((x, y), number_to_draw, fill="black", font=font)
-        image.save(str(i) + ".png")
+        output_path = os.path.join(save_path, str(number_to_draw) + ".png")
+        image.save(output_path)
