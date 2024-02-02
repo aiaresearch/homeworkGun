@@ -10,10 +10,10 @@ This is a repository for an wonderful device that users could ont only fast scan
 - Fast scanning of student ID from assignments
 - Visualized sheet for homework handing
 
-## Technologies
+## Languages
 
 - Python
 - cnOcr
 
 
-# in development...
+# Developing
