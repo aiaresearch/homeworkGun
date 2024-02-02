@@ -17,7 +17,3 @@ for i in range(iter):
     y = (height - text_height) / 2
     draw.text((x, y), number_to_draw, fill="black", font=font)
     image.save("number_image" + str(i) + ".png")
-
-# Save the image
-
-image.show()
