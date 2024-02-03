@@ -1,4 +1,5 @@
 onnxruntime-gpu
 pytorch
 torchvision
+polygon3
 cnocr[ort-gpu]
