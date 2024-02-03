@@ -1,4 +1,4 @@
 onnxruntime-gpu
-torch
+pytorch
 torchvision
 cnocr[ort-gpu]
