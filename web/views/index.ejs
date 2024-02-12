@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostgreSQL Data Upload and Display</title>
+</head>
+<body>
+  <h1>Data Upload and Display</h1>
+  
+  <form action="/upload" method="POST">
+    <input type="text" name="data" placeholder="Enter data to upload">
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>Uploaded Data:</h2>
+  <ul>
+    <% rows.forEach(row => { %>
+      <li><%= row.data %></li>
+    <% }); %>
+  </ul>
+</body>
+</html>
