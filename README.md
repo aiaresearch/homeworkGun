@@ -1,4 +1,4 @@
-### Homework Gun
+# Homework Gun
 
 
 ## Introduction
@@ -19,15 +19,12 @@ This is a repository for an wonderful device that users could ont only fast scan
 - cnOcr
 
 
-# Developing
-
-
-# installation
+## installation
 
 - clone the repository
-- create a virtual environment using venv or conda
+- create a virtual environment
 
+- install the required packages using pip
 ```python
-python -m venv env # venv
-conda create -n env python=3.9 # conda
+pip install -r requirements.txt
 ```
