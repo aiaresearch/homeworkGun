@@ -4,3 +4,4 @@ torchvision
 polygon3
 opencv-python
 cnocr[ort-gpu]
+psycopg2
