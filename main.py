@@ -1,15 +1,19 @@
 import cap
-import recognize
+from recognize import recognize
 import insert
+import cv2
 
 
 if __name__ == '__main__':
     
-    cap.capture()
+    while True:
+        if (cv2.waitKey(1) & 0xFF) == ord('c'):
+            results = recognize(cap.capImage())
+            results = list(set(results))
 
-    result = recognize.recognize()
-    result = list(set(result))
-
-    insert.insert(result)
-    print(f"Successfully inserted {len(result)} submitted records.")
+            insert.insert(results)
+            print(f"Successfully inserted {len(results)} submitted records.")
+        
+        if (cv2.waitKey(1) & 0xFF) == ord('q'):
+            break
     

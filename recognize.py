@@ -1,6 +1,5 @@
 import cnocr
 import os
-import cap
 
 # image_dir = r"E:\homeworkGun\tests\images"
 
@@ -8,9 +7,8 @@ import cap
 ocr = cnocr.CnOcr(rec_model_name='number-densenet_lite_136-fc', det_model_name='en_PP-OCRv3_det')
 # start recognition
 # 先读一张图片，然后识别，后面要改成按下扳机拍照识别
-def recognize():
+def recognize(frame):
     results = []
-    frame = cap.capImage()
     for line in ocr.ocr(frame, det=True):
         print('recognized text: ', line['text'])
         results.append(line['text'])
