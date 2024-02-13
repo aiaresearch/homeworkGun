@@ -1,8 +1,4 @@
-onnxruntime-gpu
-torch
-torchvision
-polygon3
-opencv-python
-cnocr[ort-gpu]
+cnocr[ort-cpu]
 psycopg2
 flask
+keyboard
