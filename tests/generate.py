@@ -1,6 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont
 import random
 import os
+import psycopg2
+
+# Connect to the database
 
 save_path = r"E:\homeworkGun\tests\images"
 
@@ -22,3 +25,21 @@ def generate_number_image():
         draw.text((x, y), number_to_draw, fill="black", font=font)
         output_path = os.path.join(save_path, str(number_to_draw) + ".png")
         image.save(output_path)
+
+def generate_submit_record(iter) -> list[str]:
+    ret = []
+    year = 2024
+    for _ in range(iter):
+        month = str(random.randint(1, 12))
+        if len(month) == 1:
+            month = "0" + month
+        if month == "02":
+            day = str(random.randint(1, 29))
+        elif month in ["04", "06", "09", "11"]:
+            day = str(random.randint(1, 30))
+        else:
+            day = str(random.randint(1, 31))
+        date = year + "-" + month + "-" + day
+        ret.append(date)
+        
+    return ret
