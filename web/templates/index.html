@@ -8,10 +8,10 @@
         /* 样式设置 */
         body {
             display: flex;
-            justify-content: center; /* 水平居中 */
-            align-items: center; /* 垂直居中 */
+            flex-direction: column; /* 主轴方向为垂直方向 */
+            align-items: center; /* 水平居中 */
             height: 100vh; /* 设置整个页面的高度为视口的高度 */
-            margin: 0; /* 去除默认边距 */
+            margin: 10px; /* 去除默认边距 */
         }
 
         .container {
@@ -26,10 +26,11 @@
         }
 
         .box {
-            width: 48%; /* 框宽度 */
+            width: 31%; /* 框宽度 */
             border: 1px solid #ccc; /* 边框样式 */
             padding: 10px; /* 内边距 */
             box-sizing: border-box; /* 包含边框在内的盒模型 */
+            margin-top: 20px; /* 上边距 */
         }
 
         .scroll-box {
@@ -37,7 +38,6 @@
             overflow: auto; /* 添加滚动条 */
             border: 1px solid #ccc; /* 边框样式 */
             padding: 10px; /* 内边距 */
-            margin-top: 20px; /* 上边距 */
             width: 100%; /* 方框宽度 */
         }
 
@@ -46,12 +46,10 @@
             font-weight: bold; /* 副标题加粗 */
             margin-bottom: 10px; /* 副标题下边距 */
         }
-
-        /* 在这里添加你的其他样式 */
     </style>
 </head>
 <body>
-    <h1>学生信息管理系统</h1> <!-- 页面标题 -->
+    <h1>学生信息管理系统</h1> <!-- 主标题 -->
     <div class="container">
         <div class="box">
             <div class="subtitle">学生信息</div> <!-- 学生信息副标题 -->
@@ -64,8 +62,22 @@
             </div>
         </div>
         <div class="box">
+            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 未交学生名单数据显示区域 -->
+                {% for unsubmit in unsubmits %}
+                    <p>{{ unsubmit }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="box">
             <div class="subtitle">xxxx提交情况</div> <!-- xxxx提交情况副标题 -->
-            <!-- 这里放xxxx提交情况框中的内容 -->
+            <div class="submit-box scroll-box">
+                <!-- 提交情况数据显示区域 -->
+                {% for submit in submits %}
+                    <p>{{ submit }}</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
