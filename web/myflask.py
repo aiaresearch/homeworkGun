@@ -45,7 +45,7 @@ def get_unsubmits():
     cur.execute("SELECT * FROM students WHERE id NOT IN (SELECT id FROM submit);")
     unsubmits = cur.fetchall()
     cur.close()
-    conn.close()
+    conn.close()  
     return unsubmits
 
 @app.route('/')
