@@ -1,22 +1,13 @@
-const Pool = require('pg');
+const{ Pool } = require('pg');
 const fs = require('fs');
-const toml = require('toml');
+const toml = require('@iarna/toml');
+const path = require('path');
 
 // 读取配置文件
-fs.readFile('config.toml', 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
+const confFilePath = path.join('..', 'config.toml');
+const data = fs.readFileSync(confFilePath, 'utf-8')
+const parsedToml = toml.parse(data)
 
-  try {
-    // 解析 .toml 文件
-    const parsedToml = toml.parse(data);
-    console.log(parsedToml);
-  } catch (error) {
-    console.error('Error parsing TOML:', error);
-  }
-});
 
 // 提取配置文件中的数据库配置信息
 const databaseName = parsedToml.databases.database;
@@ -38,7 +29,7 @@ function getRandomInt(min, max) {
   }  
 
 // 生成插入数据的 SQL 语句
-function generateInsertQuery(name, id, sid) {
+function generateInsertQuery(name, id) {
   return `INSERT INTO students (name, id, sid) VALUES ('${name}', '${id}', '${sid}');`;
 }
 
