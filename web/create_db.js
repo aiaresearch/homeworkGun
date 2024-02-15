@@ -50,8 +50,8 @@ async function generateData() {
     // 循环生成 100 条数据
     for (let i = 1; i <= 50; i++) {
       const name = `User${i}`;
-      const sid = `${i.toString().padStart(2, '0')}`
-      const id = `202308${sid}`
+      const id = `${i.toString().padStart(2, '0')}`
+      const sid = `202308${sid}`
       const query = generateInsertQuery(name, id, sid);
 
       // 执行插入数据的 SQL 语句
