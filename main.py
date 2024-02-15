@@ -2,6 +2,7 @@ import cap
 from recognize import recognize
 from insert import insert
 import cv2
+import keyboard
 
 
 if __name__ == '__main__':

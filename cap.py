@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def capImage():
+def capImage() -> np.ndarray:
     cap = cv2.VideoCapture(0)
     _, frame = cap.read()
     cap.release()
