@@ -11,7 +11,11 @@
             flex-direction: column; /* 主轴方向为垂直方向 */
             align-items: center; /* 水平居中 */
             height: 100vh; /* 设置整个页面的高度为视口的高度 */
-            margin: 10px; /* 去除默认边距 */
+            margin: 0; /* 去除默认边距 */
+            background-image: url('https://th.bing.com/th/id/OIP.3YGVLWFy3ooeB0CJ1q--AwHaEy?rs=1&pid=ImgDetMain');
+            background-size: cover; /* 使背景图片充满整个容器 */
+            background-repeat: repeat; /* 平铺背景图片 */
+            background-position: center; /* 将背景图片居中 */
         }
 
         .container {
@@ -26,11 +30,12 @@
         }
 
         .box {
-            width: 31%; /* 框宽度 */
+            width: 28%; /* 框宽度 */
             border: 1px solid #ccc; /* 边框样式 */
             padding: 10px; /* 内边距 */
             box-sizing: border-box; /* 包含边框在内的盒模型 */
             margin-top: 20px; /* 上边距 */
+            background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，并且透明度为10% */
         }
 
         .scroll-box {
@@ -38,7 +43,7 @@
             overflow: auto; /* 添加滚动条 */
             border: 1px solid #ccc; /* 边框样式 */
             padding: 10px; /* 内边距 */
-            width: 100%; /* 方框宽度 */
+            width: calc(100% - 22px); /* 方框宽度，考虑到边框和内边距 */
         }
 
         .subtitle {
@@ -62,15 +67,6 @@
             </div>
         </div>
         <div class="box">
-            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
-            <div class="submit-box scroll-box">
-                <!-- 未交学生名单数据显示区域 -->
-                {% for unsubmit in unsubmits %}
-                    <p>{{ unsubmit }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="box">
             <div class="subtitle">xxxx提交情况</div> <!-- xxxx提交情况副标题 -->
             <div class="submit-box scroll-box">
                 <!-- 提交情况数据显示区域 -->
@@ -79,6 +75,16 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="box">
+            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 未交学生名单数据显示区域 -->
+                {% for unsubmit in unsubmits %}
+                    <p>{{ unsubmit }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        
     </div>
 
     <script>

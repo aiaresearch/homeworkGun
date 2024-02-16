@@ -1,13 +1,18 @@
 from flask import Flask, render_template
 import psycopg2
+import toml
+import os
 
 app = Flask(__name__)
 
 # PostgreSQL数据库连接参数
-DB_HOST = 'localhost'
-DB_NAME = 'db'
-DB_USER = 'postgres'
-DB_PASSWORD = '024430'
+cfg = toml.load(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + '/config.toml')
+cfg = cfg['databases']
+
+DB_HOST = cfg['host']
+DB_NAME = cfg['database']
+DB_USER = cfg['username']
+DB_PASSWORD = cfg['password']
 
 # 连接到PostgreSQL数据库
 def connect_to_db():
