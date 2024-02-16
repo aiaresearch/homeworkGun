@@ -23,27 +23,21 @@ def connect_to_db():
         password=DB_PASSWORD
     )
     return conn
+    
+def fetch_students_from_db():
+    with connect_to_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM students;")
+            student_list = cur.fetchall()
+            return student_list
 
-# 从数据库中获取用户列表
-def get_users():
-    conn = connect_to_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM students;")
-    users = cur.fetchall()
-    cur.close()
-    conn.close()
-    return users
-
-# 从数据库中获取提交列表
-def get_submits():
-    conn = connect_to_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id FROM submit;")
-    submits = cur.fetchall()
-    cur.close()
-    conn.close()
-    return submits
-
+def fetch_submissions_from_db():
+    with connect_to_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM submit;")
+            submission_ids = cur.fetchall()
+            return submission_ids
+            
 def get_unsubmits():
     conn = connect_to_db()
     cur = conn.cursor()
@@ -55,10 +49,10 @@ def get_unsubmits():
 
 @app.route('/')
 def index():
-    users = get_users()
-    submits = get_submits()  # 调用get_submits函数从数据库检索提交
+    students = fetch_students_from_db()
+    submissions = fetch_submissions_from_db()  # 调用get_submits函数从数据库检索提交
     unsubmits = get_unsubmits()  # 调用get_unsubmits函数从数据库检索未提交
-    return render_template('index.html', users=users, submits=submits, unsubmits=unsubmits)
+    return render_template('index.html', users=students, submits=submissions, unsubmits=unsubmits)
 
 if __name__ == '__main__':
     app.run()
