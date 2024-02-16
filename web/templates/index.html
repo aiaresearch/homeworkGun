@@ -67,6 +67,15 @@
             </div>
         </div>
         <div class="box">
+            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 未交学生名单数据显示区域 -->
+                {% for unsubmit in unsubmits %}
+                    <p>{{ unsubmit }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="box">
             <div class="subtitle">xxxx提交情况</div> <!-- xxxx提交情况副标题 -->
             <div class="submit-box scroll-box">
                 <!-- 提交情况数据显示区域 -->
