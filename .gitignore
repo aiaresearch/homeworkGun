@@ -5,3 +5,4 @@ config.toml
 node_modules
 *.json
 *.ps1
+*.db
