@@ -6,12 +6,13 @@ import keyboard
 
 
 if __name__ == '__main__':
+    cam = cap.Camera()
     
-    # TODO: 当扳机按键被按下时，调用cap.capImage()函数
+    # TODO: Implement physical trigger driver
     def on_key_press(event):
         if event.name == 'c':
             print("Capturing image...")
-            results = recognize(cap.capImage())
+            results = recognize(cam.capture())
             print(results)
             results = list(set(results))
             insert(results)
@@ -20,4 +21,3 @@ if __name__ == '__main__':
 
     keyboard.on_press(on_key_press)
     keyboard.wait('esc')
-    exit()
