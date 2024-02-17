@@ -4,11 +4,12 @@ import toml
 import os
 
 
-# initialize connection and cursor
+# 初始化数据库连接
+def init_db() -> dict:
+    return toml.load(os.path.join(os.path.dirname(__file__) +'\\config.toml'))
 
-def insert(numbers) -> None:
-    cfg = toml.load(os.path.join(os.path.dirname(__file__) +'\\config.toml'))
-    cfg = cfg['databases']
+def insert_submit(numbers) -> None:
+    cfg = init_db()['databases']
 
     conn = psycopg2.connect(
     host=cfg['host'],

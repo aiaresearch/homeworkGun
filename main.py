@@ -1,7 +1,6 @@
 import cap
-from recognize import recognize
-from insert import insert
-import cv2
+import recognize
+import insert
 import keyboard
 
 
@@ -11,11 +10,16 @@ if __name__ == '__main__':
     def on_key_press(event):
         if event.name == 'c':
             print("Capturing image...")
-            results = recognize(cap.capImage())
-            print(results)
-            results = list(set(results))
-            insert(results)
+            # 接收识别结果
+            results = list(set(recognize.recognize_image(cap.capImage())))
+            print('Read:',results)
+            # 插入数据库
+            insert.insert_submit(results)
             print(f"Successfully inserted {len(results)} submitted records.")
+
+        elif event.name == 'q':
+            print("Quitting...")
+            exit()
             
 
     keyboard.on_press(on_key_press)
