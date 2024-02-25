@@ -27,6 +27,7 @@
             display: flex; /* 使用 Flexbox 布局 */
             flex-direction: row; /* 主轴方向为水平方向 */
             justify-content: space-between; /* 左右对齐 */
+            flex-wrap: wrap; /* 允许多行布局 */
         }
 
         .box {
@@ -49,6 +50,20 @@
         .subtitle {
             font-size: 1.2rem; /* 副标题字体大小 */
             font-weight: bold; /* 副标题加粗 */
+            margin-bottom: 10px; /* 副标题下边距 */
+        }
+
+        /* 新增框的样式 */
+        .big-box {
+            width: calc(100% - 20px); /* 宽度与上方框一致 */
+            border: 1px solid #ccc; /* 边框样式 */
+            padding: 10px; /* 内边距 */
+            box-sizing: border-box; /* 包含边框在内的盒模型 */
+            margin-top: 20px; /* 上边距 */
+            background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，并且透明度为10% */
+        }
+
+        .big-box .subtitle {
             margin-bottom: 10px; /* 副标题下边距 */
         }
     </style>
@@ -76,7 +91,7 @@
             </div>
         </div>
         <div class="box">
-            <div class="subtitle">xxxx提交情况</div> <!-- xxxx提交情况副标题 -->
+            <div class="subtitle" id="submitSubtitle"></div> <!-- 提交情况副标题 -->
             <div class="submit-box scroll-box">
                 <!-- 提交情况数据显示区域 -->
                 {% for submit in submits %}
@@ -84,19 +99,32 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="box">
-            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
+        <!-- 新增大框 -->
+        <div class="big-box">
+            <div class="subtitle">本次提交情况</div> <!-- 新框副标题 -->
             <div class="submit-box scroll-box">
-                <!-- 未交学生名单数据显示区域 -->
-                {% for unsubmit in unsubmits %}
-                    <p>{{ unsubmit }}</p>
-                {% endfor %}
+                <!-- 数据显示区域 -->
+                <!-- 这里放本次提交情况框中的内容 -->
             </div>
         </div>
-        
     </div>
 
     <script>
+        // JavaScript 代码，用于设置提交情况副标题
+        var submitSubtitle = document.getElementById("submitSubtitle");
+
+        // 获取当前日期
+        var currentDate = new Date();
+        var year = currentDate.getFullYear(); // 年
+        var month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // 月，补0
+        var day = ("0" + currentDate.getDate()).slice(-2); // 日，补0
+
+        // 格式化为 YY-MM-DD 字符串
+        var formattedDate = year + "-" + month + "-" + day;
+
+        // 设置副标题文本
+        submitSubtitle.textContent = formattedDate + " 提交情况";
+
         // JavaScript 代码，用于实现自动滚动效果
         var scrollBox = document.getElementById("scrollBox");
 

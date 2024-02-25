@@ -2,6 +2,8 @@ from flask import Flask, render_template
 import psycopg2
 import toml
 import os
+import webbrowser
+import threading
 
 app = Flask(__name__)
 
@@ -60,5 +62,14 @@ def index():
     unsubmits = get_unsubmits()  # 调用get_unsubmits函数从数据库检索未提交
     return render_template('index.html', users=users, submits=submits, unsubmits=unsubmits)
 
+def open_browser():
+    # 在 Flask 应用启动时自动打开浏览器并访问指定的网址
+    webbrowser.open('http://127.0.0.1:5000')
+
 if __name__ == '__main__':
+    # 在启动 Flask 应用程序后，启动一个线程来自动打开浏览器
+    app_thread = threading.Thread(target=open_browser)
+    app_thread.start()
+
+    # 启动 Flask 应用程序
     app.run(debug=True)
