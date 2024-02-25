@@ -8,7 +8,7 @@ app = Flask(__name__)
 submits = db_configs.get_submits()
 unsubmits = db_configs.get_unsubmits()
 # 构造包含提交和未提交数据的字符串
-submit_data = "Submits:\n" + "\n".join(submits) + "\n\nUnsubmits:\n" + "\n".join(unsubmits)
+submit_data = "Submits:\n" + "\n".join([str(submit) for submit in submits]) + "\n\nUnsubmits:\n" + "\n".join([str(unsubmit) for unsubmit in unsubmits])
 
 client = ZhipuAI(api_key="YOUR_API_KEY")
 response = client.chat.completions.create(
