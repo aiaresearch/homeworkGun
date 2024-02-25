@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+#from zhipuai import ZhipuAI
 import psycopg2
 import toml
 import os
@@ -6,6 +7,7 @@ import webbrowser
 import threading
 
 app = Flask(__name__)
+#client = ZhipuAI(api_key="YOUR_API_KEY") # 请填写您自己的APIKey
 
 # PostgreSQL数据库连接参数
 cfg = toml.load(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + '/config.toml')
@@ -54,7 +56,6 @@ def get_unsubmits():
     cur.close()
     conn.close()  
     return unsubmits
-
 @app.route('/')
 def index():
     users = get_users()
