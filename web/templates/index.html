@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +53,7 @@
             margin-bottom: 10px; /* 副标题下边距 */
         }
 
-        /* 新增框的样式 */
+        /* 饼图框 */
         .big-box {
             width: calc(100% - 20px); /* 宽度与上方框一致 */
             border: 1px solid #ccc; /* 边框样式 */
@@ -66,6 +65,11 @@
 
         .big-box .subtitle {
             margin-bottom: 10px; /* 副标题下边距 */
+        }
+
+        #pieChart {
+            max-width: 100%; /* 最大宽度为容器宽度 */
+            height: auto; /* 高度自适应 */
         }
     </style>
 </head>
@@ -105,11 +109,17 @@
             <div class="subtitle">本次提交情况</div> <!-- 新框副标题 -->
             <div class="submit-box scroll-box">
                 <!-- 数据显示区域 -->
-                <!-- 这里放本次提交情况框中的内容 -->
+                <canvas id="pieChart"></canvas>
+                <div id="submitCount" style="text-align: left; margin-top: 10px;"></div>
+                <div id="unsubmitCount" style="text-align: left;"></div>
             </div>
         </div>
     </div>
-
+    <div id="chatglm-response" style="margin-top: 20px;">
+        <h3>给老师的建议：</h3>
+        <p id="suggestion-text">这里将显示建议...</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // JavaScript 代码，用于设置提交情况副标题
         var submitSubtitle = document.getElementById("submitSubtitle");
@@ -126,136 +136,62 @@
         // 设置副标题文本
         submitSubtitle.textContent = formattedDate + " 提交情况";
 
-        // JavaScript 代码，用于实现自动滚动效果
-        var scrollBox = document.getElementById("scrollBox");
+        // 获取提交和未提交数量
+        var submitCount = {{ submits|length }};
+        var unsubmitCount = {{ unsubmits|length }};
 
-        // 每隔一段时间滚动一次
-        setInterval(function() {
-            // 每次滚动一行高度
-            scrollBox.scrollTop += 1;
+        // 设置提交和未提交人数文本
+        var submitCountText = document.getElementById("submitCount");
+        submitCountText.textContent = "本次作业提交人数：" + submitCount;
 
-            // 当滚动到底部时，回到顶部重新开始滚动
-            if (scrollBox.scrollTop === scrollBox.scrollHeight - scrollBox.clientHeight) {
-                scrollBox.scrollTop = 0;
+        var unsubmitCountText = document.getElementById("unsubmitCount");
+        unsubmitCountText.textContent = "本次作业未交人数：" + unsubmitCount;
+
+        // 绘制饼状图
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['提交', '未提交'],
+                datasets: [{
+                    data: [submitCount, unsubmitCount],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
             }
-        }, 25); // 滚动速度，单位是毫秒（ms）
+        });
+        async function callChatGLMAPI() {
+        try {
+            const response = await fetch('https://api.example.com/chatglm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: '如何减少未交作业人数并提高提交率?' }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('suggestion-text').textContent = data.response;
+            } else {
+                console.error('Error:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    // 在页面加载时调用 ChatGLM API
+    window.onload = callChatGLMAPI;
     </script>
 </body>
 </html>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学生信息管理系统</title>
-    <style>
-        /* 样式设置 */
-        body {
-            display: flex;
-            flex-direction: column; /* 主轴方向为垂直方向 */
-            align-items: center; /* 水平居中 */
-            height: 100vh; /* 设置整个页面的高度为视口的高度 */
-            margin: 0; /* 去除默认边距 */
-            background-image: url('https://th.bing.com/th/id/OIP.3YGVLWFy3ooeB0CJ1q--AwHaEy?rs=1&pid=ImgDetMain');
-            background-size: cover; /* 使背景图片充满整个容器 */
-            background-repeat: repeat; /* 平铺背景图片 */
-            background-position: center; /* 将背景图片居中 */
-        }
-
-        .container {
-            width: 80%; /* 容器宽度 */
-            max-width: 800px; /* 最大宽度 */
-            border: 1px solid #ccc; /* 边框样式 */
-            padding: 20px; /* 内边距 */
-            text-align: center; /* 文本居中 */
-            display: flex; /* 使用 Flexbox 布局 */
-            flex-direction: row; /* 主轴方向为水平方向 */
-            justify-content: space-between; /* 左右对齐 */
-        }
-
-        .box {
-            width: 28%; /* 框宽度 */
-            border: 1px solid #ccc; /* 边框样式 */
-            padding: 10px; /* 内边距 */
-            box-sizing: border-box; /* 包含边框在内的盒模型 */
-            margin-top: 20px; /* 上边距 */
-            background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，并且透明度为10% */
-        }
-
-        .scroll-box {
-            height: 200px; /* 方框高度 */
-            overflow: auto; /* 添加滚动条 */
-            border: 1px solid #ccc; /* 边框样式 */
-            padding: 10px; /* 内边距 */
-            width: calc(100% - 22px); /* 方框宽度，考虑到边框和内边距 */
-        }
-
-        .subtitle {
-            font-size: 1.2rem; /* 副标题字体大小 */
-            font-weight: bold; /* 副标题加粗 */
-            margin-bottom: 10px; /* 副标题下边距 */
-        }
-    </style>
-</head>
-<body>
-    <h1>学生信息管理系统</h1> <!-- 主标题 -->
-    <div class="container">
-        <div class="box">
-            <div class="subtitle">学生信息</div> <!-- 学生信息副标题 -->
-            <!-- 这里放学生信息框中的内容 -->
-            <div class="scroll-box" id="scrollBox">
-                <!-- 数据显示区域 -->
-                {% for user in users %}
-                    <p>{{ user }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="box">
-            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
-            <div class="submit-box scroll-box">
-                <!-- 未交学生名单数据显示区域 -->
-                {% for unsubmit in unsubmits %}
-                    <p>{{ unsubmit }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="box">
-            <div class="subtitle">xxxx提交情况</div> <!-- xxxx提交情况副标题 -->
-            <div class="submit-box scroll-box">
-                <!-- 提交情况数据显示区域 -->
-                {% for submit in submits %}
-                    <p>{{ submit }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="box">
-            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
-            <div class="submit-box scroll-box">
-                <!-- 未交学生名单数据显示区域 -->
-                {% for unsubmit in unsubmits %}
-                    <p>{{ unsubmit }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        
-    </div>
-
-    <script>
-        // JavaScript 代码，用于实现自动滚动效果
-        var scrollBox = document.getElementById("scrollBox");
-
-        // 每隔一段时间滚动一次
-        setInterval(function() {
-            // 每次滚动一行高度
-            scrollBox.scrollTop += 1;
-
-            // 当滚动到底部时，回到顶部重新开始滚动
-            if (scrollBox.scrollTop === scrollBox.scrollHeight - scrollBox.clientHeight) {
-                scrollBox.scrollTop = 0;
-            }
-        }, 25); // 滚动速度，单位是毫秒（ms）
-    </script>
-</body>
-</html>
->>>>>>> cf847b585eb7948ae3a7acdb747b28d9e1c0da49

@@ -3,3 +3,4 @@ flask
 keyboard
 toml
 psycopg2-binary
+zhipuai
