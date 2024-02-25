@@ -1,6 +1,7 @@
 import db_configs
 
 from zhipuai import ZhipuAI
+import json
 
 submits = db_configs.get_submits()
 unsubmits = db_configs.get_unsubmits()
@@ -20,4 +21,8 @@ def generate_data():
     )
 
     for chunk in response:
+        chunk_data = {
+            "someKey": list(chunk.choices[0].delta.content)
+        }
+        yield json.dumps(chunk_data) + '\n'
         print(chunk.choices[0].delta)
