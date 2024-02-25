@@ -8,7 +8,7 @@ ocr = CnOcr(rec_model_name='number-densenet_lite_136-fc', det_model_name='en_PP-
 
 # start recognition
 # 先读一张图片，然后识别，后面要改成按下扳机拍照识别
-def recognize(img):
+def recognize_image(img):
     results = []
     for line in ocr.ocr(img, det=True):
         print('recognized text: ', line['text'])

@@ -1,21 +1,10 @@
-import psycopg2
-from datetime import datetime
-import toml
-import os
+from connect import get_connection, DatabaseType
 
 
-# initialize connection and cursor
+# 初始化数据库连接
 
-def insert(numbers) -> None:
-    cfg = toml.load(os.path.join(os.path.dirname(__file__) +'\\config.toml'))
-    cfg = cfg['databases']
-
-    conn = psycopg2.connect(
-    host=cfg['host'],
-    database=cfg['database'],
-    user=cfg['username'],
-    password=cfg['password'],
-    )
+def insert_submit(numbers) -> None:
+    conn = get_connection(DatabaseType.SQLITE)
     cur = conn.cursor()
 
     for number in numbers:
@@ -24,5 +13,9 @@ def insert(numbers) -> None:
         if ret is None:
             continue
         else:
-            cur.execute(f"INSERT INTO submit VALUES ({number}, '{datetime.now().strftime('%Y-%m-%d')}');")
+            cur.execute(f"INSERT INTO submit VALUES ({number}, date());")
             print(f"Inserted {number} into submit table")
+    
+
+    conn.commit()
+    conn.close()

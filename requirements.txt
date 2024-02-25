@@ -1,5 +1,5 @@
 cnocr[ort-cpu]
-psycopg2
 flask
 keyboard
 toml
+psycopg2-binary
