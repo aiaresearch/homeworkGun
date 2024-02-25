@@ -5,16 +5,16 @@ import keyboard
 
 
 if __name__ == '__main__':
+    cam = cap.Camera()
     
-    # TODO: 当扳机按键被按下时，调用cap.capImage()函数
+    # TODO: Implement physical trigger driver
     def on_key_press(event):
         if event.name == 'c':
             print("Capturing image...")
-            # 接收识别结果
-            results = list(set(recognize.recognize_image(cap.capImage())))
-            print('Read:',results)
-            # 插入数据库
-            insert.insert_submit(results)
+            results = recognize(cam.capture())
+            print(results)
+            results = list(set(results))
+            insert(results)
             print(f"Successfully inserted {len(results)} submitted records.")
 
         elif event.name == 'q':
@@ -24,4 +24,3 @@ if __name__ == '__main__':
 
     keyboard.on_press(on_key_press)
     keyboard.wait('esc')
-    exit()
