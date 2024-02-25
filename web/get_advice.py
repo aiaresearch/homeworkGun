@@ -19,7 +19,5 @@ def generate_data():
     stream=True,
     )
 
-    get_query_result = []
     for chunk in response:
-        get_query_result.append(chunk.choices[0].delta)
         print(chunk.choices[0].delta)
