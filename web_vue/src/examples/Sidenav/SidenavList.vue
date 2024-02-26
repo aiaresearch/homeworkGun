@@ -133,7 +133,7 @@ export default {
   },
   data() {
     return {
-      title: "Argon Dashboard 2",
+      title: "学生信息管理系统",
       controls: "dashboardsExamples",
       isActive: "active"
     };

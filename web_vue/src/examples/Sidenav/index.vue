@@ -35,7 +35,7 @@
           class="navbar-brand-img h-100"
           alt="main_logo"
         />
-        <span class="ms-2 font-weight-bold me-2">Argon Dashboard 2</span>
+        <span class="ms-2 font-weight-bold me-2">学生信息管理系统</span>
       </router-link>
     </div>
     <hr class="mt-0 horizontal dark" />

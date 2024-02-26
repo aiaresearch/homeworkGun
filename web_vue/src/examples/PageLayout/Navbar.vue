@@ -9,7 +9,7 @@
         class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
         :class="darkMode ? 'text-black' : 'text-white'"
         to="/"
-        >Argon Dashboard 2</router-link
+        >学生信息管理系统</router-link
       >
       <button
         class="shadow-none navbar-toggler ms-2"
