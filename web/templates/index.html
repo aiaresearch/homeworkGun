@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/get_advice.js"></script>
     <title>学生信息管理系统</title>
     <style>
         /* 样式设置 */
@@ -12,7 +13,7 @@
             align-items: center; /* 水平居中 */
             height: 100vh; /* 设置整个页面的高度为视口的高度 */
             margin: 0; /* 去除默认边距 */
-            background-image: url('https://th.bing.com/th/id/OIP.3YGVLWFy3ooeB0CJ1q--AwHaEy?rs=1&pid=ImgDetMain');
+            background-image: url('https://bing.img.run/1366x768.php');
             background-size: cover; /* 使背景图片充满整个容器 */
             background-repeat: repeat; /* 平铺背景图片 */
             background-position: center; /* 将背景图片居中 */
@@ -117,7 +118,7 @@
     </div>
     <div id="chatglm-response" style="margin-top: 20px;">
         <h3>给老师的建议：</h3>
-        <p id="suggestion-text">这里将显示建议...</p>
+        <div id="data-container">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -171,27 +172,6 @@
                 maintainAspectRatio: false
             }
         });
-        async function callChatGLMAPI() {
-        try {
-            const response = await fetch('https://api.example.com/chatglm', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: '如何减少未交作业人数并提高提交率?' }),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('suggestion-text').textContent = data.response;
-            } else {
-                console.error('Error:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-    // 在页面加载时调用 ChatGLM API
-    window.onload = callChatGLMAPI;
-    </script>
+       
 </body>
 </html>

@@ -14,7 +14,7 @@ def generate_data():
     response = client.chat.completions.create(
     model="glm-4",
     messages=[
-        {"role": "system", "content": "你是一个为老师提供作业提交建议的助手，请使用中文用于根据学生提交作业和未提交作业的数据，做出预测并给老师提供建议。"},
+        {"role": "system", "content": "你是一个为老师提供作业提交建议的助手，请使用中文用于根据学生提交作业和未提交作业的数据，做出预测并给老师提供建议。我将会给你一组数据，数据‘submits’提交作业的学生信息。数据下面分支三个，name，长id和短id。‘unsubmits’是未交作业的学生信息，分别是name和短id。"},
         {"role": "user", "content": submit_data},
     ],
     stream=True,
