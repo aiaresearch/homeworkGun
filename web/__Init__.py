@@ -1,9 +1,11 @@
 import get_advice
 
 from flask import Flask, request, Response, stream_with_context
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/get-data', methods=['GET'])
 def get_data():
