@@ -1,21 +1,7 @@
-# Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Vue
-/dist/
-/.env
-
-# Editor
-.vscode/
-
-# Build configuration
+__pycache__
+data
+.vscode
 config.toml
-
-# Temporary files
 *.json
 *.ps1
-__pycache__/
-data/
 *.db
