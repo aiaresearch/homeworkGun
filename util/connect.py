@@ -22,7 +22,7 @@ def connect_to_sqlite_db(database: str = DB_NAME) -> sqlite3.Connection:
     """
 
     conn = sqlite3.connect(database)
-    return conn.cursor()
+    return conn
 
 def connect_to_postgres_db() -> psycopg2.extensions.connection:
     """

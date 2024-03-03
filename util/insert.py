@@ -1,4 +1,4 @@
-from connect import get_connection, DatabaseType
+from util.connect import get_connection, DatabaseType
 
 
 # 初始化数据库连接

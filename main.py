@@ -1,6 +1,6 @@
-import cap
-import recognize
-import insert
+import util.cap as cap
+import util.recognize as recognize
+import util.insert as insert
 import keyboard
 
 
