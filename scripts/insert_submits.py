@@ -19,12 +19,8 @@ def insert_submits(db_type:DatabaseType = DatabaseType.SQLITE) -> None:
     submits = []
     for student in students:
         submits.append(student[0])
-    print(submits)
     for submit in submits:
         cur.execute(f"INSERT INTO submit VALUES ({submit},date());")
-
-    cur.execute("SELECT * FROM submit;")
-    print(cur.fetchall())
 
 
     cur.close()
