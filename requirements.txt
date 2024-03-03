@@ -4,3 +4,5 @@ keyboard
 toml
 psycopg2-binary
 zhipuai
+pyside6
+pyinstaller

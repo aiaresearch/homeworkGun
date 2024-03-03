@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from PySide6.QtSql import QSqlDatabase, QSqlQuery
-from util.connect import get_connection
-
+import os
 import sys
 
 class MainWindow(QMainWindow):
@@ -10,7 +9,7 @@ class MainWindow(QMainWindow):
 
         # 创建数据库连接
         self.db = QSqlDatabase.addDatabase('QSQLITE')
-        self.db.setDatabaseName('test.db')  # 指定数据库文件路径
+        self.db.setDatabaseName(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + 'homework.db')  # 指定数据库文件路径
 
         if not self.db.open():
             print("无法连接到数据库")
@@ -22,7 +21,7 @@ class MainWindow(QMainWindow):
 
         # 执行查询
         self.query = QSqlQuery()
-        self.query.exec("SELECT * FROM your_table")
+        self.query.exec("SELECT * FROM students;")
 
         # 加载数据到界面
         self.load_data()

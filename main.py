@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 import util.cap as cap
 import util.recognize as recognize
 import util.insert as insert

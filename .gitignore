@@ -6,3 +6,4 @@ config.toml
 *.ps1
 *.db
 node_modules
+*.csv

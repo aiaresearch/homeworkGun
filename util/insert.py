@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util.connect import get_connection, DatabaseType
 
 
@@ -19,3 +22,6 @@ def insert_submit(numbers) -> None:
 
     conn.commit()
     conn.close()
+
+if __name__ == '__main__':
+    insert_submit([1, 2, 3, 4, 5])
