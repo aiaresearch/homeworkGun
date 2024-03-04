@@ -2,18 +2,17 @@ import os
 import sys
 import csv
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from scripts.generate_csv import generate_student
 from util.connect import get_connection, DatabaseType
 
-QUERY_EXISTS = {DatabaseType.POSTGRES: "pg.database", DatabaseType.SQLITE: "sqlite_master"}
-DATE_TYPE = {DatabaseType.POSTGRES: "DATE", DatabaseType.SQLITE: "TEXT"}
 
 def create_database(db_type:DatabaseType = DatabaseType.SQLITE)  -> None:
     conn = get_connection(db_type)
     cur = conn.cursor()
     
         
-    cur.execute("CREATE TABLE IF NOT EXISTS students (id INT PRIMARY KEY, name VARCHAR(50));")
-    cur.execute(f"CREATE TABLE IF NOT EXISTS submit (id INT PRIMARY KEY, time {DATE_TYPE[db_type]});")
+    cur.execute("CREATE TABLE IF NOT EXISTS students (id INT PRIMARY KEY, name TEXT);")
+    cur.execute("CREATE TABLE IF NOT EXISTS submit (id INT PRIMARY KEY, time TEXT);")
 
     cur.close()
     conn.commit()
@@ -37,5 +36,8 @@ def insert_students_from_csv(file_path:str, db_type:DatabaseType = DatabaseType.
 
 if __name__ == '__main__':
     create_database()
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    insert_students_from_csv(os.path.join(script_dir,'students.csv'))
+    csv_file = os.path.join(os.path.dirname(__file__),'students.csv')
+    if not os.path.exists(csv_file):
+        generate_student(csv_file)
+    
+    insert_students_from_csv(csv_file)

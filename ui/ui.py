@@ -1,15 +1,51 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QLabel, QTableWidgetItem, QVBoxLayout, QWidget, QPushButton, QInputDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QLabel, QTableWidgetItem, QVBoxLayout, QWidget, QPushButton, QInputDialog, QMessageBox, QLineEdit
 from PySide6.QtCore import Qt
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util.connect import get_connection, DatabaseType
 
-class MainWindow(QMainWindow):
+class LoginPage(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("未提交学生")
+        self.setWindowTitle("登录页面")
+        self.resize(250, 100)
+        self.center()
+
+        layout = QVBoxLayout(self)
+
+        self.classname = ''
+        self.label = QLabel("请输入班级：", self)
+        layout.addWidget(self.label)
+
+        self.class_edit = QLineEdit(self)
+        layout.addWidget(self.class_edit)
+
+        self.login_button = QPushButton("登录", self)
+        self.login_button.clicked.connect(self.login_clicked)
+        layout.addWidget(self.login_button)
+
+    def center(self):
+        screen_geometry = QApplication.primaryScreen().geometry()
+        window_geometry = self.frameGeometry()
+        window_geometry.moveCenter(screen_geometry.center())
+        self.move(window_geometry.topLeft())
+
+    def login_clicked(self):
+        while not self.classname:
+            self.classname = self.class_edit.text()
+            if not self.classname:
+                QMessageBox.warning(self, "Warning", "班级不能为空！")
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, classname = '高一23'):
+        super().__init__()
+
+        self.classname = classname
+
+        self.setWindowTitle("学生作业提交情况页面")
         self.setGeometry(100, 100, 800, 600)
 
         central_widget = QWidget()
@@ -18,11 +54,13 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         central_widget.setLayout(layout)
 
-        self.label = QLabel("表格示例")
+        self.label = QLabel(f" {self.classname} 班学生作业提交情况")
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.label)
 
         self.table_widget = QTableWidget()
+        self.table_widget.setColumnCount(3)
+        self.table_widget.setHorizontalHeaderLabels(["学号", "姓名", "提交情况"])
         layout.addWidget(self.table_widget)
 
         # 创建数据库连接
@@ -90,8 +128,6 @@ class MainWindow(QMainWindow):
 
         # 填充表格
         self.table_widget.setRowCount(len(unsubmits)+len(submits))
-        self.table_widget.setColumnCount(3)
-        self.table_widget.setHorizontalHeaderLabels(["学号", "姓名", "提交情况"])
 
         for i, row in enumerate(unsubmits):
             id_item = QTableWidgetItem(str(row[0]))
@@ -101,7 +137,6 @@ class MainWindow(QMainWindow):
             self.table_widget.setItem(i, 2, QTableWidgetItem("未提交"))
         
         for i, row in enumerate(submits):
-            print(row)
             id_item = QTableWidgetItem(str(row[0]))
             name_item = QTableWidgetItem(row[1])
             self.table_widget.setItem(i+len(unsubmits), 0, id_item)
@@ -121,6 +156,6 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    MainWindow = MainWindow()
+    MainWindow.show()
     sys.exit(app.exec())

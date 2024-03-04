@@ -22,6 +22,7 @@ def insert_submits(db_type:DatabaseType = DatabaseType.SQLITE) -> None:
     for submit in submits:
         cur.execute(f"INSERT INTO submit VALUES ({submit},date());")
 
+    print("Insertion done.")
 
     cur.close()
     conn.commit()

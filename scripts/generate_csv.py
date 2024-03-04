@@ -12,22 +12,24 @@ def generate_student_name():
     last_names = ["伟", "芳", "娜", "强", "磊", "军", "洋", "勇", "艳", "杰"]
     return random.choice(first_names) + random.choice(last_names)
 
-number_of_students = 10
+
+def generate_student():
+    number_of_students = 10
 
 
-students = []
+    students = []
 
-for _ in range(number_of_students):
-    student_id = generate_student_id()
-    student_name = generate_student_name()
-    students.append([student_id, student_name])
+    for _ in range(number_of_students):
+        student_id = generate_student_id()
+        student_name = generate_student_name()
+        students.append([student_id, student_name])
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-csv_file_path = os.path.join(script_dir, "students.csv")
+    csv_file_path = os.path.join(script_dir, "students.csv")
 
-with open(csv_file_path, "w", newline="", encoding="utf-8-sig") as file:
-    writer = csv.writer(file)
-    writer.writerows(students)
+    with open(csv_file_path, "w", newline="", encoding="utf-8-sig") as file:
+        writer = csv.writer(file)
+        writer.writerows(students)
 
-print(f"Successfully generated {number_of_students} random students and saved to '{csv_file_path}' file.")
+    print(f"Successfully generated {number_of_students} random students and saved to '{csv_file_path}' file.")
