@@ -1,3 +1,5 @@
+# Default #
+#######################
 __pycache__
 data
 .vscode
@@ -7,3 +9,49 @@ config.toml
 *.db
 node_modules
 *.csv
+
+# Binaries and objects #
+#######################
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.o
+
+# Dependency directories (remove the comment if you are not committing your vendor)
+# vendor/
+
+# IDE and editors #
+###################
+.vscode/
+*.swp
+*~
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Personal config files #
+#########################
+.env
+.env.local
+
+# Build directories #
+#####################
+dist/
+build/
