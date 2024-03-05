@@ -4,6 +4,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util.connect import get_connection, DatabaseType
+from util.fetch import fetch_data
 
 class LoginPage(QWidget):
     def __init__(self):
