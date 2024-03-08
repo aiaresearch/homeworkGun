@@ -27,7 +27,7 @@ def insert_students_from_csv(file_path:str, db_type:DatabaseType = DatabaseType.
         next(reader)
         for row in reader:
             cur.execute(f"INSERT INTO students (id, name) VALUES ({int(row[0])}, '{row[1]}');")
-        print(f"Inserted {cur.rowcount} students into the database.")
+        print(f"Inserted {len(list(reader))} students into the database.")
 
 
     cur.close()
@@ -38,6 +38,6 @@ if __name__ == '__main__':
     create_database()
     csv_file = os.path.join(os.path.dirname(__file__),'students.csv')
     if not os.path.exists(csv_file):
-        generate_student(csv_file)
+        generate_student()
     
     insert_students_from_csv(csv_file)

@@ -1,14 +1,22 @@
 import os
 import sys
+import subprocess
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from util.connect import get_connection, DatabaseType
 
 def init_database():
+
+    # completed = subprocess.run(['createdb', '-h', 'localhost', '-p', '5432', '-U', 'postgres', 'homework_db'])
+    # if completed.returncode!= 0:
+    #     print("Failed to create database, it looks like it already exists.")
+    # completed.check_returncode()
+
     conn = get_connection(DatabaseType.POSTGRES)
     
     cursor = conn.cursor()
     
     # create tables
+    cursor.execute("""CREATE EXTENSION IF NOT EXISTS "uuid-ossp";""")
     cursor.execute("""CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
