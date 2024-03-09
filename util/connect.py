@@ -1,13 +1,15 @@
 import sqlite3
 import psycopg2
-import toml
 from enum import Enum
 import os
 
-config = toml.load(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + '/config.toml')['databases']
-USER = config["username"]
-PASSWORD = config["password"]
-DATABASE = config["database"]
+# config = toml.load(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + '/config.toml')['databases']
+USER = os.getenv('PG_USER')
+PASSWORD = os.getenv('PG_PASSWD')
+DATABASE = os.getenv('PG_DATABASE')
+if USER is None or PASSWORD is None or DATABASE is None:
+    raise ValueError("Database credentials not found in environment variables.")
+
 DB_NAME = "homework.db"
 
 
