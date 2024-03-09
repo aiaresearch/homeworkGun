@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	check_config()
+
 	r := gin.Default()
 	db := db_operation.ConnectToDB()
 	r.Use(func(c *gin.Context) {

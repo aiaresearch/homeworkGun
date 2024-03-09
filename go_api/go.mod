@@ -3,6 +3,7 @@ module homeworkGun
 go 1.22.0
 
 require (
+	github.com/BurntSushi/toml v1.3.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/lib/pq v1.10.9
 )
