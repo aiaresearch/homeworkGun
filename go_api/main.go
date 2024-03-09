@@ -1,18 +1,18 @@
 package main
 
 import (
-	"net/http"
+	"homeworkGun/db_operation"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	get_documents_path()
-	router := gin.Default()
-	router.GET("/get-advice", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Streaming the returned content...",
-		})
+	r := gin.Default()
+	db := db_operation.ConnectToDB()
+	r.Use(func(c *gin.Context) {
+		db_operation.SetDBToContext(c, db)
+		c.Next()
 	})
-	router.Run("127.0.0.1:2333") // listen and serve on 127.0.0.1:8080
+	r.GET("/crud", db_operation.QueryHandler)
+	r.Run("0.0.0.0:1145") // listen and serve on 0.0.0.0:8080
 }
