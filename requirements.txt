@@ -1,7 +1,5 @@
 cnocr[ort-cpu]
 flask
-keyboard
-toml
 psycopg2-binary
 zhipuai
 pyside6
