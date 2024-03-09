@@ -15,6 +15,6 @@ def fetch_student_data(class_id):
         raise Exception(f"Failed to fetch student data. Status code: {response.status_code}")
     
 if __name__ == "__main__":
-    class_id = "1"
+    class_id = "11"
     data = fetch_student_data(class_id)
     print(data)
