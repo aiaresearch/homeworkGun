@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 #from zhipuai import ZhipuAI
 import os
 import sys
@@ -40,6 +40,10 @@ def get_unsubmits():
     conn.close()  
     return unsubmits
 
+def match_user(user_id, passwd):
+    return get_data.__match_user(conn, user_id, passwd)
+
+
 @app.route('/')
 def index():
     users = get_users(conn)
@@ -49,18 +53,20 @@ def index():
 
 @app.route('/getinfo/student', methods=['GET'])
 def get_studentinfo():
-    class_id = requests.args.get('class_id')
+    class_id = request.args.get('class_id')
     return get_data.__get_student(conn, class_id)
 
-def open_browser():
-    # 在 Flask 应用启动时自动打开浏览器并访问指定的网址
-    webbrowser.open('http://127.0.0.1:5000')
+@app.route('/login', methods=['GET'])
+def check_login():
+    user_id = request.args.get('username')
+    passwd = request.args.get('password')
+    if match_user(user_id, passwd):
+        return 'success'
+    else:
+        return 'fail'
+
 
 if __name__ == '__main__':
-    # 在启动 Flask 应用程序后，启动一个线程来自动打开浏览器
-    app_thread = threading.Thread(target=open_browser)
-    app_thread.start()
-
-    # 启动 Flask 应用程序
+    # 启动 Flask 应用
     app.run(debug=True)
     conn.close()
