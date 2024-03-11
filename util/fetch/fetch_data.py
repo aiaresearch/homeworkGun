@@ -1,13 +1,16 @@
 import requests
 import urllib.parse
+import os
+import json
 
-SERVER_ADDRESS = "http://localhost:5000"
+# ADDR = os.getenv("REQUEST_URL")
+ADDR = "YOU_KNOW_WHICH"
 
 def fetch_student_data(class_id):
-    endpoint = "/getinfo/student"
+    endpoint = "/crud"
     data = {"class_id": class_id}
     query_string = urllib.parse.urlencode(data)
-    url = f"{SERVER_ADDRESS}{endpoint}?{query_string}"
+    url = f"{ADDR}{endpoint}?{query_string}"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
@@ -16,12 +19,7 @@ def fetch_student_data(class_id):
     
 def fetch_login_status(username, password):
     endpoint = "/login"
-    data = {"username": username, "password": password}
-    response = requests.post(SERVER_ADDRESS+endpoint, data)
-    if response.status_code == 200:
-        return True if response.text == 'success' else False
-
-if __name__ == "__main__":
-    class_id = "1"
-    data = fetch_student_data(class_id)
-    print(data)
+    data = json.dumps({"account": username, "passwd": password})
+    url = f"{ADDR}{endpoint}"
+    response = requests.post(url, data=data)
+    return response
