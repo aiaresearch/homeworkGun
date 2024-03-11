@@ -21,7 +21,6 @@ func ConnectToDB() *sql.DB {
 		get_config.Cfg.Databases.Password,
 		get_config.Cfg.Databases.Database,
 	)
-	// 在此处填写数据库相关信息
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
