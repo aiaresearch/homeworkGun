@@ -56,10 +56,11 @@ def get_studentinfo():
     class_id = request.args.get('class_id')
     return get_data.__get_student(conn, class_id)
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def check_login():
-    user_id = request.args.get('username')
-    passwd = request.args.get('password')
+    data = request.form
+    user_id = data['username']
+    passwd = data['password']
     if match_user(user_id, passwd):
         return 'success'
     else:

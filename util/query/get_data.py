@@ -13,7 +13,6 @@ def __get_student(conn, class_id):
 
 def __match_user(conn, username, passwd):
     cur = conn.cursor()
-    print(username, passwd)
     cur.execute(f"SELECT password, salt FROM users WHERE username = '{username}';")
     password, salt = cur.fetchone()
     return True if convert(passwd, salt) == password else False

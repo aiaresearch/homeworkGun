@@ -17,9 +17,7 @@ def fetch_student_data(class_id):
 def fetch_login_status(username, password):
     endpoint = "/login"
     data = {"username": username, "password": password}
-    query_string = urllib.parse.urlencode(data)
-    url = f"{SERVER_ADDRESS}{endpoint}?{query_string}"
-    response = requests.get(url)
+    response = requests.post(SERVER_ADDRESS+endpoint, data)
     if response.status_code == 200:
         return True if response.text == 'success' else False
 
