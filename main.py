@@ -9,17 +9,18 @@ import cv2
 import requests
 from cnocr import CnOcr
 from ui.login_ui import Ui_LoginWidget
+from ui.main_window_ui import Ui_MainWindow
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt, Slot)
+    QSize, QTime, QUrl, Qt, Slot, QTimer)
 from PySide6.QtGui import (QGuiApplication, QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform, QScreen)
 from PySide6.QtWidgets import (QApplication, QMainWindow, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QVBoxLayout, QWidget, )
+    QVBoxLayout, QWidget, QMessageBox)
 
 class LoginWindow(QWidget):
     def __init__(self):
@@ -41,12 +42,19 @@ class LoginWindow(QWidget):
     def login_check(self):
         username = self.ui.lineUsername.text()
         password = self.ui.linePassword.text()
-        if fetch_data.fetch_login_status(username, password):
-            self.close()
-            self.main_window = MainWindow()
-            self.main_window.show()
-        else:
-            ... # TODO: Show error message
+        with fetch_data.fetch_login_status(username, password) as response:
+            print(response.status_code)
+            if response.status_code == 200:
+                token = response.json()['token']
+                self.close()
+                self.main_window = MainWindow(token)
+                self.main_window.show()
+            else:
+                errorMessage = QMessageBox()
+                errorMessage.setWindowTitle("登录失败")
+                errorMessage.setText("用户名或密码错误！")
+                errorMessage.addButton(QMessageBox.StandardButton.Ok)
+                errorMessage.exec()
 
     def center(self):
         # 获取主屏幕对象
@@ -64,19 +72,35 @@ class LoginWindow(QWidget):
         self.move(x, y)
             
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, token):
         super().__init__()
-        self.setWindowTitle("Gun Detection")
-        self.setFixedSize(1280, 720)
-        self.label = QLabel(self)
-        self.label.setFixedSize(1280, 720)
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setText("Press space to capture image")
-        self.label.show()
+        self.token = token
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        self.setWindowTitle("作业提交系统")
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_camera)
+        self.timer.start(1000 // 30)
+
+
+        self.ui.actionExit.triggered.connect(self.close)
+    
+    def update_camera(self):
+        img = cam.capture()
+        height, width, _ = img.shape
+        bytesPerLine = 3 * width
+        qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
+
+        self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
+        self.ui.lbCam.setScaledContents(True)
 
 
            
 if __name__ == '__main__':
+    cam = cap.Camera(source=1)
+    ocr = CnOcr(rec_model_name='number-densenet_lite_136-fc', det_model_name='en_PP-OCRv3_det', cand_alphabet='0123456789')
     app = QApplication(sys.argv)
     window = LoginWindow()
     window.show()
