@@ -29,5 +29,7 @@ func main() {
 	authGroup := r.Group("/").Use(middleware.TokenAuthMiddleware())
 	authGroup.GET("/user", handlers.UserProfileHandler)
 
+	r.GET("/students", handlers.GetStudentsByClass)
+
 	log.Fatal(r.Run("0.0.0.0:1145")) // listen and serve on 0.0.0.0:1145
 }
