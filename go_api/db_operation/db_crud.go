@@ -15,22 +15,22 @@ func QueryHandler(c *gin.Context) {
 	}
 
 	// Query from first table
-	rows1, err := db.Query("SELECT name, id, class FROM students")
+	rows1, err := db.Query("SELECT id, name, class, student_id, school_id FROM students_list")
 	if err != nil {
 		log.Println(err)
-		c.JSON(500, gin.H{"error": "Error executing query on studentsData"})
+		c.JSON(500, gin.H{"error": "Error executing query on students_listData"})
 		return
 	}
 	defer rows1.Close()
 
-	var studentsData []map[string]interface{}
+	var students_listData []map[string]interface{}
 	for rows1.Next() {
-		var students_name, students_id, students_class string
-		if err := rows1.Scan(&students_name, &students_id, &students_class); err != nil {
+		var students_id, students_name, students_class, students_student_id, students_school_id string
+		if err := rows1.Scan(&students_id, &students_name, &students_class, &students_student_id, &students_school_id); err != nil {
 			log.Println(err)
 			continue
 		}
-		studentsData = append(studentsData, map[string]interface{}{"name": students_name, "id": students_id, "class": students_class})
+		students_listData = append(students_listData, map[string]interface{}{"id": students_id, "name": students_name, "class": students_class, "student_id": students_student_id, "school_id": students_school_id})
 	}
 
 	// Query from second table
@@ -54,7 +54,7 @@ func QueryHandler(c *gin.Context) {
 
 	// Aggregate and respond with JSON
 	c.JSON(200, gin.H{
-		"students":   studentsData,
+		"students":   students_listData,
 		"submission": submissionData,
 	})
 }
