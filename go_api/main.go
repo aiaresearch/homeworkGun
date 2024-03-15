@@ -26,6 +26,8 @@ func main() {
 	r.POST("/login", handlers.LoginHandler)
 	r.POST("/register", handlers.RegisterHandler)
 
+	r.POST("/create", handlers.CreateHomework)
+
 	authGroup := r.Group("/").Use(middleware.TokenAuthMiddleware())
 	authGroup.GET("/user", handlers.UserProfileHandler)
 
