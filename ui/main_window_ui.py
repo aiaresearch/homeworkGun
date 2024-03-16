@@ -102,9 +102,6 @@ class MainWindow(QMainWindow):
         self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
         self.ui.lbCam.setScaledContents(True)
 
-    def update_homework(self):
-        ...
-
     def scan(self):
         img = self.cam.capture()
         ids = self.ocr.ocr(img, det_kwargs={'min_box_size' : 10})
@@ -117,3 +114,11 @@ class MainWindow(QMainWindow):
         _.addButton(QMessageBox.StandardButton.Ok)
         _.exec()
 
+    def fetch_homework(self):
+        ...
+
+    def fetch_submisson(self):
+        ...
+
+    def fetch_students(self):
+        ...

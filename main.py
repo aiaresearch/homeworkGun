@@ -2,12 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(__file__))
 import util.cap as cap
-from util.fetch import fetch_data
-from util.insert import insert_submit
 from ui.login_ui import LoginWindow
-import numpy as np
-import cv2
-import requests
 from cnocr import CnOcr
 
 from PySide6.QtWidgets import QApplication
