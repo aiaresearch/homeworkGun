@@ -3,8 +3,8 @@ import urllib.parse
 import os
 import json
 
-# ADDR = os.getenv("REQUEST_URL")
-ADDR = "YOU_KNOW_WHICH"
+ADDR = os.getenv("REQUEST_URL")
+# ADDR = "YOU_KNOW_WHICH"
 
 def fetch_student_data(class_id):
     endpoint = "/crud"

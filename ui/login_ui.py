@@ -1,23 +1,18 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'login.ui'
-##
-## Created by: Qt User Interface Compiler version 6.6.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+from PySide6.QtGui import (QGuiApplication, QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QSizePolicy, QVBoxLayout,
-    QWidget)
+    QWidget, QMessageBox)
+import os
+import json
+from ui.register_ui import RegisterWindow
+from ui.main_window_ui import MainWindow
+from util.fetch import fetch_data
 
 class Ui_LoginWidget(object):
     def setupUi(self, LoginWidget):
@@ -120,3 +115,86 @@ class Ui_LoginWidget(object):
         self.registerButton.setText(QCoreApplication.translate("LoginWidget", u"\u6ce8\u518c", None))
     # retranslateUi
 
+
+class LoginWindow(QWidget):
+    def __init__(self, cam, ocr):
+        super().__init__()
+        self.ui = Ui_LoginWidget()
+        self.ui.setupUi(self)
+        self.setWindowTitle("Login")
+        self.cam = cam
+        self.ocr = ocr
+        self.center()
+
+
+        self.lbBackground = QLabel(self)
+        self.lbBackground.setPixmap(QPixmap("./ui/resources/zh1z.png"))
+        self.lbBackground.setScaledContents(True)
+        self.lbBackground.show()
+        self.lbBackground.lower()
+        self.EXPIRE = False
+
+        if self.detect_cfg_existence():
+            self.token_check()
+        
+        self.ui.loginButton.clicked.connect(self.login_check)
+        self.ui.registerButton.clicked.connect(self.redirect_to_register_window)
+    
+    def detect_cfg_existence(self):
+        return os.path.exists("cache.json")
+
+    def redirect_to_register_window(self):
+        self.register_window = RegisterWindow()
+        self.register_window.show()
+
+    def redirect_to_main_window(self):
+        self.close()
+        self.main_window = MainWindow(self.cam, self.ocr)
+        self.main_window.show()
+
+    def token_check(self):
+        with open("cache.json", "r") as file:
+            token = json.load(file)['token']
+            with fetch_data.fetch_token_status(token) as response:
+                if response.status_code == 200:
+                    if response.json()['message'].endswith('successfully'):
+                        self.redirect_to_main_window()
+                elif response.status_code == 401 and self.EXPIRE == False:
+                    self.EXPIRE = True
+                    expireMessage = QMessageBox()
+                    expireMessage.setWindowTitle("登录失败")
+                    expireMessage.setText("登录过期，请重新登录！")
+                    expireMessage.addButton(QMessageBox.StandardButton.Ok)
+                    expireMessage.exec()
+
+
+    def login_check(self):
+        username = self.ui.lineUsername.text()
+        password = self.ui.linePassword.text()
+        with fetch_data.fetch_login_status(username, password) as response:
+            if response.status_code == 200:
+                token = response.json()['token']
+                with open("cache.json", "w") as file:
+                    json.dump({'token': token}, file)
+                self.redirect_to_main_window()
+            else:
+                errorMessage = QMessageBox()
+                errorMessage.setWindowTitle("登录失败")
+                errorMessage.setText("用户名或密码错误！")
+                errorMessage.addButton(QMessageBox.StandardButton.Ok)
+                errorMessage.exec()
+
+    def center(self):
+        # 获取主屏幕对象
+        screen = QGuiApplication.primaryScreen()
+        screen_geometry = screen.geometry()
+
+        # 获取窗口的尺寸
+        window_geometry = self.frameGeometry()
+
+        # 计算窗口居中时的左上角坐标
+        x = screen_geometry.center().x() - window_geometry.width() / 2
+        y = screen_geometry.center().y() - window_geometry.height() / 2
+
+        # 移动窗口到居中位置
+        self.move(x, y)
