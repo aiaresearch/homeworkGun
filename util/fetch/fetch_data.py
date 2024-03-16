@@ -23,3 +23,17 @@ def fetch_login_status(username, password):
     url = f"{ADDR}{endpoint}"
     response = requests.post(url, data=data)
     return response
+
+def fetch_token_status(token):
+    endpoint = "/user"
+    headers = {"Authorization" : token}
+    url = f"{ADDR}{endpoint}"
+    response = requests.get(url, headers=headers)
+    return response
+
+def fetch_register_status(username, password):
+    endpoint = "/register"
+    data = json.dumps({"account": username, "passwd": password})
+    url = f"{ADDR}{endpoint}"
+    response = requests.post(url, data=data)
+    return response

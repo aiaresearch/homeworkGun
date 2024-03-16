@@ -1,112 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LoginWidget</class>
- <widget class="QWidget" name="LoginWidget">
+ <class>registerWindow</class>
+ <widget class="QWidget" name="registerWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>539</height>
+    <width>450</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>注册</string>
   </property>
-  <widget class="QLabel" name="lbWelcome">
+  <widget class="QLabel" name="lbRegister">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>80</y>
-     <width>321</width>
+     <x>120</x>
+     <y>70</y>
+     <width>221</width>
      <height>61</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>52</pointsize>
+     <pointsize>24</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>Welcome!</string>
+    <string>注册</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>222</x>
-     <y>172</y>
-     <width>251</width>
+     <x>110</x>
+     <y>140</y>
+     <width>241</width>
      <height>181</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QFrame" name="frameUsername">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>198</width>
-         <height>35</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="usernameLayout">
-        <item>
-         <widget class="QLabel" name="lbUsername">
-          <property name="text">
-           <string>用户名:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineUsername"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="framePassword">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>197</width>
-         <height>35</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="passwordLayout">
-        <item>
-         <widget class="QLabel" name="lbPassword">
-          <property name="text">
-           <string>密码:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="linePassword"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="frameButton">
+     <widget class="QFrame" name="usernameFrame">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -116,29 +55,72 @@
       <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>10</x>
          <y>10</y>
-         <width>176</width>
-         <height>37</height>
+         <width>211</width>
+         <height>51</height>
         </rect>
        </property>
-       <layout class="QHBoxLayout" name="buttonLayout">
+       <layout class="QHBoxLayout" name="usernameLayout">
         <item>
-         <widget class="QPushButton" name="loginButton">
+         <widget class="QLabel" name="lbUsername">
           <property name="text">
-           <string>登录</string>
+           <string>用户名：</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="registerButton">
+         <widget class="QLineEdit" name="inputUsername">
           <property name="text">
-           <string>注册</string>
+           <string/>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="passwordFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>211</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="passwordLayout">
+        <item>
+         <widget class="QLabel" name="lbPassword">
+          <property name="text">
+           <string>密码：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="inputPassword">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>注册</string>
+      </property>
      </widget>
     </item>
    </layout>
