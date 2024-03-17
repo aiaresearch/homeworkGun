@@ -1,15 +1,15 @@
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt, QTimer)
+                            QMetaObject, QObject, QPoint, QRect,
+                            QSize, QTime, QUrl, Qt, QTimer)
 from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
+                           QCursor, QFont, QFontDatabase, QGradient,
+                           QIcon, QImage, QKeySequence, QLinearGradient,
+                           QPainter, QPalette, QPixmap, QRadialGradient,
+                           QTransform)
 from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QListView,
-    QMainWindow, QMenu, QMenuBar, QScrollArea,
-    QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
-    QWidget, QPushButton, QMessageBox)
+                               QMainWindow, QMenu, QMenuBar, QScrollArea,
+                               QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
+                               QWidget, QPushButton, QMessageBox)
 
 
 class Ui_MainWindow(object):
@@ -37,6 +37,9 @@ class Ui_MainWindow(object):
         self.capButton = QPushButton(self.centralwidget)
         self.capButton.setObjectName(u"capButton")
         self.capButton.setGeometry(QRect(250, 100, 101, 31))
+        self.createButton = QPushButton(self.centralwidget)
+        self.createButton.setObjectName(u"createButton")
+        self.createButton.setGeometry(QRect(250, 140, 101, 31))
         self.scrollArea = QScrollArea(self.centralwidget)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setGeometry(QRect(370, 309, 320, 240))
@@ -65,6 +68,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+
     # setupUi
 
     def retranslateUi(self, MainWindow):
@@ -73,8 +77,10 @@ class Ui_MainWindow(object):
         self.lbCam.setText("")
         self.lbText.setText(QCoreApplication.translate("MainWindow", u"\u62cd\u6444\u753b\u9762", None))
         self.capButton.setText(QCoreApplication.translate("MainWindow", u"\u62cd\u6444", None))
+        self.createButton.setText(QCoreApplication.translate("MainWindow", u"\u521b\u5efa", None))
         self.menuExit.setTitle(QCoreApplication.translate("MainWindow", u"\u83dc\u5355", None))
     # retranslateUi
+
 
 class MainWindow(QMainWindow):
     def __init__(self, cam, ocr):
@@ -85,7 +91,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowTitle("作业提交系统")
-        
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_camera)
         self.timer.start(1000 // 30)
@@ -94,30 +100,32 @@ class MainWindow(QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
 
     def update_camera(self):
-        img = self.cam.capture()
-        height, width, _ = img.shape
-        bytesPerLine = 3 * width
-        qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
+        if self.cam is not None:
+            img = self.cam.capture()
+            height, width, _ = img.shape
+            bytesPerLine = 3 * width
+            qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
 
-        self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
-        self.ui.lbCam.setScaledContents(True)
+            self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
+            self.ui.lbCam.setScaledContents(True)
 
     def scan(self):
-        img = self.cam.capture()
-        ids = self.ocr.ocr(img, det_kwargs={'min_box_size' : 10})
-        message = ''
-        for id in ids:
-            message = message + ' ' + id['text']
-        _ = QMessageBox()
-        _.setWindowTitle("扫描结果")
-        _.setText(f"扫描到 {message}")
-        _.addButton(QMessageBox.StandardButton.Ok)
-        _.exec()
+        if self.cam is not None:
+            img = self.cam.capture()
+            scanned_ids = self.ocr.ocr(img, det_kwargs={'min_box_size': 10})
+            message = ''
+            for scanned_id in scanned_ids:
+                message = message + ' ' + scanned_id['text']
+            _ = QMessageBox()
+            _.setWindowTitle("扫描结果")
+            _.setText(f"扫描到 {message}")
+            _.addButton(QMessageBox.StandardButton.Ok)
+            _.exec()
 
     def fetch_homework(self):
         ...
 
-    def fetch_submisson(self):
+    def fetch_submission(self):
         ...
 
     def fetch_students(self):

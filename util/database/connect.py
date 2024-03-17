@@ -1,7 +1,4 @@
 import sqlite3
-import psycopg2
-from enum import Enum
-import os
 
 DB_NAME = "homework.db"
 
@@ -14,5 +11,6 @@ def connect_to_sqlite_db(database: str = DB_NAME) -> sqlite3.Connection:
     conn = sqlite3.connect(database)
     return conn
 
+
 def get_connection():
-        return connect_to_sqlite_db()
+    return connect_to_sqlite_db()
