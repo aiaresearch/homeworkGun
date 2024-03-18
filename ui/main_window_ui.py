@@ -10,7 +10,10 @@ from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QListView,
                                QMainWindow, QMenu, QMenuBar, QScrollArea,
                                QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
                                QWidget, QPushButton, QMessageBox)
-
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
+from ui.homework_creation_ui import HomeworkCreationWindow
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -97,7 +100,10 @@ class MainWindow(QMainWindow):
         self.timer.start(1000 // 30)
 
         self.ui.capButton.clicked.connect(self.scan)
+        self.ui.createButton.clicked.connect(self.create_homework)
         self.ui.actionExit.triggered.connect(self.close)
+
+        self.buffer = {}
 
     def update_camera(self):
         if self.cam is not None:
@@ -122,11 +128,24 @@ class MainWindow(QMainWindow):
             _.addButton(QMessageBox.StandardButton.Ok)
             _.exec()
 
+
+    def create_homework(self):
+        self.create = HomeworkCreationWindow()
+        self.create.submitSignal.connect(self.handleCreation)
+        self.create.show()
+
+
+    def handleCreation(self, title, subject, start_time, end_time):
+        print(title, subject, start_time, end_time)
+
+
     def fetch_homework(self):
         ...
 
+
     def fetch_submission(self):
         ...
+
 
     def fetch_students(self):
         ...

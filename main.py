@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QApplication
 import qt_material
 from cnocr import CnOcr
 sys.path.append(os.path.dirname(__file__))
-DEBUG = True
+DEBUG = False
 if DEBUG is False:
     import util.cap as cap
 from ui.login_ui import LoginWindow
