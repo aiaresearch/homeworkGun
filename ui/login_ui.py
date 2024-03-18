@@ -12,7 +12,7 @@ import os
 import json
 from ui.register_ui import RegisterWindow
 from ui.main_window_ui import MainWindow
-from util.fetch import fetch_data
+from util.request import request
 
 class Ui_LoginWidget(object):
     def setupUi(self, LoginWidget):
@@ -155,7 +155,7 @@ class LoginWindow(QWidget):
     def token_check(self):
         with open("cache.json", "r") as file:
             token = json.load(file)['token']
-            with fetch_data.fetch_token_status(token) as response:
+            with request.fetch_token_status(token) as response:
                 if response.status_code == 200:
                     if response.json()['message'].endswith('successfully'):
                         self.redirect_to_main_window()
@@ -171,7 +171,7 @@ class LoginWindow(QWidget):
     def login_check(self):
         username = self.ui.lineUsername.text()
         password = self.ui.linePassword.text()
-        with fetch_data.fetch_login_status(username, password) as response:
+        with request.fetch_login_status(username, password) as response:
             if response.status_code == 200:
                 token = response.json()['token']
                 with open("cache.json", "w") as file:

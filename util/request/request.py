@@ -6,7 +6,7 @@ import json
 # if platform is windows, change the following line to your own address
 if os.name == "nt":
     ADDR = "URL"
-elif os.name == "posix":
+else:
     ADDR = os.getenv("REQUEST_URL")
 
 
@@ -41,6 +41,22 @@ def fetch_token_status(token):
 def fetch_register_status(username, password):
     endpoint = "/register"
     data = json.dumps({"account": username, "passwd": password})
+    url = f"{ADDR}{endpoint}"
+    response = requests.post(url, data=data)
+    return response
+
+
+def create_homework(homework_id, subject, start_date, end_date):
+    endpoint = "/create"
+    data = {"homework_id": homework_id, "submission_required": subject, "start_date": start_date, "end_date": end_date}
+    url = f"{ADDR}{endpoint}"
+    response = requests.post(url, data=data)
+    return response
+
+
+def submit_homework(school_id, subject, homework_id):
+    endpoint = "/submit"
+    data = {"school_id": school_id, "subject_id": subject, "homework_id": homework_id}
     url = f"{ADDR}{endpoint}"
     response = requests.post(url, data=data)
     return response
