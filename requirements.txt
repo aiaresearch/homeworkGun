@@ -5,4 +5,5 @@ toml
 psycopg2-binary
 zhipuai
 pyside6
+requests
 pyinstaller

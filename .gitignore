@@ -27,6 +27,7 @@ node_modules
 # IDE and editors #
 ###################
 .vscode/
+.idea/
 *.swp
 *~
 
@@ -55,3 +56,4 @@ Thumbs.db
 #####################
 dist/
 build/
+cmake-build-debug/
