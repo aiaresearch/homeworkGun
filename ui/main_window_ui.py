@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
 from ui.homework_creation_ui import HomeworkCreationWindow
+from util.database import init_client_db, insertion
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
         self.ocr = ocr
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        init_client_db.database_init()
         self.setWindowTitle("作业提交系统")
 
         self.timer = QTimer(self)
@@ -103,7 +104,7 @@ class MainWindow(QMainWindow):
         self.ui.createButton.clicked.connect(self.create_homework)
         self.ui.actionExit.triggered.connect(self.close)
 
-        self.buffer = {}
+        self.buffer = {"homeworks": [], "submissions": []}
 
     def update_camera(self):
         if self.cam is not None:
@@ -136,7 +137,9 @@ class MainWindow(QMainWindow):
 
 
     def handleCreation(self, title, subject, start_time, end_time):
-        print(title, subject, start_time, end_time)
+        homework_id = insertion.insert_homework_creation(title, subject, start_time, end_time)
+        self.buffer['homeworks'].append((homework_id, title, subject, start_time, end_time))
+        print(self.buffer)
 
 
     def fetch_homework(self):

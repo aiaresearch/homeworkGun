@@ -64,7 +64,7 @@ class HomeworkCreationWindow(QWidget):
             w = Dialog("失败", "请填写完整信息")
             w.exec()
         else:
-            self.submitSignal.emit(title, subject, start_time, end_time)
+            self.submitSignal.emit(title, subject+1, start_time, end_time)
             w = Dialog("成功", "作业创建成功")
             w.exec()
             self.close()
