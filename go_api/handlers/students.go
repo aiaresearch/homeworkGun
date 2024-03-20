@@ -16,7 +16,7 @@ func GetStudentsByClass(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT name FROM students WHERE class = $1"
+	query := "SELECT name FROM students_list WHERE class = $1"
 	rows, err := db.Query(query, classValue)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error executing query"})
