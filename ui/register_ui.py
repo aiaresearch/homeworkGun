@@ -11,7 +11,7 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from util.fetch import fetch_data
+from util.request import request
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -124,6 +124,6 @@ class RegisterWindow(QWidget):
         if username == "" or password == "":
             QMessageBox.warning(self, "警告", "用户名或密码不能为空！")
         else:
-            response = fetch_data.fetch_register_status(username, password)
+            response = request.fetch_register_status(username, password)
             if response.status_code == 200:
                 QMessageBox.information(self, "成功", "注册成功！")
