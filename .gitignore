@@ -5,3 +5,5 @@ config.toml
 *.json
 *.ps1
 *.db
+.\STM32F407\.idea
+

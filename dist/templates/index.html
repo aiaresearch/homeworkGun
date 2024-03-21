@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生信息管理系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* 样式设置 */
+        body {
+            display: flex;
+            flex-direction: column; /* 主轴方向为垂直方向 */
+            align-items: center; /* 水平居中 */
+            height: 100vh; /* 设置整个页面的高度为视口的高度 */
+            margin: 0; /* 去除默认边距 */
+            background-image: url('https://api.vvhan.com/api/acgimg');
+            background-size: cover; /* 使背景图片充满整个容器 */
+            background-repeat: repeat; /* 平铺背景图片 */
+            background-position: center; /* 将背景图片居中 */
+        }
+
+        .container {
+            width: 80%; /* 容器宽度 */
+            max-width: 800px; /* 最大宽度 */
+            border: 1px solid #ccc; /* 边框样式 */
+            padding: 20px; /* 内边距 */
+            text-align: center; /* 文本居中 */
+            display: flex; /* 使用 Flexbox 布局 */
+            flex-direction: row; /* 主轴方向为水平方向 */
+            justify-content: space-between; /* 左右对齐 */
+            flex-wrap: wrap; /* 允许多行布局 */
+        }
+
+        .box {
+            width: 28%; /* 框宽度 */
+            border: 1px solid #ccc; /* 边框样式 */
+            padding: 10px; /* 内边距 */
+            box-sizing: border-box; /* 包含边框在内的盒模型 */
+            margin-top: 20px; /* 上边距 */
+            background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，并且透明度为10% */
+        }
+
+        .scroll-box {
+            height: 200px; /* 方框高度 */
+            overflow: auto; /* 添加滚动条 */
+            border: 1px solid #ccc; /* 边框样式 */
+            padding: 10px; /* 内边距 */
+            width: calc(100% - 22px); /* 方框宽度，考虑到边框和内边距 */
+        }
+
+        .subtitle {
+            font-size: 1.2rem; /* 副标题字体大小 */
+            font-weight: bold; /* 副标题加粗 */
+            margin-bottom: 10px; /* 副标题下边距 */
+        }
+
+        /* 饼图框 */
+        .big-box {
+            width: calc(100% - 20px); /* 宽度与上方框一致 */
+            border: 1px solid #ccc; /* 边框样式 */
+            padding: 10px; /* 内边距 */
+            box-sizing: border-box; /* 包含边框在内的盒模型 */
+            margin-top: 20px; /* 上边距 */
+            background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，并且透明度为10% */
+        }
+
+        .big-box .subtitle {
+            margin-bottom: 10px; /* 副标题下边距 */
+        }
+
+        #pieChart {
+            max-width: 100%; /* 最大宽度为容器宽度 */
+            height: auto; 
+        }
+        #chatglm-response {
+        margin-top: 20px;
+        opacity: 0.9;
+        text-align: left;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 10px; 
+        }
+        #chatglm-response h3 {
+            opacity: 0.9; 
+            text-align: center;
+            margin-top: 0; 
+        }
+        #data-container {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <h1>学生信息管理系统</h1> 
+    <div class="container">
+        <div class="box">
+            <div class="subtitle">学生信息</div> <!-- 学生信息副标题 -->
+            <!-- 这里放学生信息框中的内容 -->
+            <div class="scroll-box" id="scrollBox">
+                <!-- 数据显示区域 -->
+                {% for user in users %}
+                    <p>{{ user }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="box">
+            <div class="subtitle">未交学生名单</div> <!-- 未交学生名单副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 未交学生名单数据显示区域 -->
+                {% for unsubmit in unsubmits %}
+                    <p>{{ unsubmit }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="box">
+            <div class="subtitle" id="submitSubtitle"></div> <!-- 提交情况副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 提交情况数据显示区域 -->
+                {% for submit in submits %}
+                    <p>{{ submit }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- 新增大框 -->
+        <div class="big-box">
+            <div class="subtitle">本次提交情况</div> <!-- 新框副标题 -->
+            <div class="submit-box scroll-box">
+                <!-- 数据显示区域 -->
+                <canvas id="pieChart"></canvas>
+                <div id="submitCount" style="text-align: left; margin-top: 10px;"></div>
+                <div id="unsubmitCount" style="text-align: left;"></div>
+            </div>
+        </div>
+        <div id="chatglm-response" style="margin-top: 20px;">
+            <h3>给老师的建议：</h3>
+            <div id="data-container">
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript 代码，用于设置提交情况副标题
+        var submitSubtitle = document.getElementById("submitSubtitle");
+
+        // 获取当前日期
+        var currentDate = new Date();
+        var year = currentDate.getFullYear(); // 年
+        var month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // 月，补0
+        var day = ("0" + currentDate.getDate()).slice(-2); // 日，补0
+
+        // 格式化为 YY-MM-DD 字符串
+        var formattedDate = year + "-" + month + "-" + day;
+
+        // 设置副标题文本
+        submitSubtitle.textContent = formattedDate + " 提交情况";
+
+        // 获取提交和未提交数量
+        var submitCount = {{ submits|length }};
+        var unsubmitCount = {{ unsubmits|length }};
+
+        // 设置提交和未提交人数文本
+        var submitCountText = document.getElementById("submitCount");
+        submitCountText.textContent = "本次作业提交人数：" + submitCount;
+
+        var unsubmitCountText = document.getElementById("unsubmitCount");
+        unsubmitCountText.textContent = "本次作业未交人数：" + unsubmitCount;
+
+        // 绘制饼状图
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['提交', '未提交'],
+                datasets: [{
+                    data: [submitCount, unsubmitCount],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+       </script>
+           <script>
+            const dataContainer = document.getElementById('data-container');
+    let accumulatedData = '';
+    
+    const fetchDataStream = async () => {
+        const response = await fetch('http://localhost:5000/get-data');
+        const reader = response.body.getReader();
+        return new ReadableStream({
+            async start(controller) {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    const chunk = new TextDecoder("utf-8").decode(value);
+                    accumulatedData += chunk;
+                    processChunk();
+                    controller.enqueue(value);
+                }
+                controller.close();
+                reader.releaseLock();
+            }
+        });
+    };
+    
+    const processChunk = () => {
+        const messages = accumulatedData.split('\n').filter(Boolean);
+        messages.forEach(message => {
+            try {
+                const dataObj = JSON.parse(message);
+                const contentObj = JSON.parse(dataObj.content);
+                if(contentObj.someKey) {
+                    contentObj.someKey.forEach(char => displayData(char));
+                }
+            } catch (error) {
+                // wait for more data
+                console.error('Error processing chunk', error);
+            }
+        });
+        accumulatedData = '';
+    };
+    
+    const displayData = (char) => {
+        if (char === '\n') { // 检查是否需要换行
+            const breakElement = document.createElement('br');
+            dataContainer.appendChild(breakElement);
+        } else {
+            // const html = marked(char);
+            // const divElement = document.createElement('div');
+            // divElement.innerHTML = html;
+            // dataContainer.appendChild(divElement);
+            const spanElement = document.createElement('span');
+            spanElement.textContent = char;
+            dataContainer.appendChild(spanElement);
+        }
+    };
+    
+    fetchDataStream();
+        </script>
+</body>
+</html>
