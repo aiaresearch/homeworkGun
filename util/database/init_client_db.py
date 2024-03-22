@@ -1,7 +1,5 @@
 import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from util.database.connect import get_connection
+from .connect import get_connection
 
 
 def database_init():
@@ -16,16 +14,15 @@ def database_init():
     );''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS homeworks (
-                   homework_id TEXT PRIMARY KEY NOT NULL,
-                   title VARCHAR(255) NOT NULL,
+                   homework_id INT PRIMARY KEY NOT NULL,
                    subject INT NOT NULL,
                    start_date DATE NOT NULL,
                    end_date DATE NOT NULL
     );''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS submissions (
-                   submission_id TEXT PRIMARY KEY NOT NULL,
-                   homework_id TEXT NOT NULL,
+                   subject_id INT NOT NULL,
+                   homework_id INT NOT NULL,
                    school_id INT NOT NULL
     );''')
 
