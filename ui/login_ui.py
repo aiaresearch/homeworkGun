@@ -155,34 +155,34 @@ class LoginWindow(QWidget):
     def token_check(self):
         with open("cache.json", "r") as file:
             token = json.load(file)['token']
-            with request.fetch_token_status(token) as response:
-                if response.status_code == 200:
-                    if response.json()['message'].endswith('successfully'):
-                        self.redirect_to_main_window()
-                elif response.status_code == 401 and self.EXPIRE == False:
-                    self.EXPIRE = True
-                    expireMessage = QMessageBox()
-                    expireMessage.setWindowTitle("登录失败")
-                    expireMessage.setText("登录过期，请重新登录！")
-                    expireMessage.addButton(QMessageBox.StandardButton.Ok)
-                    expireMessage.exec()
+            response = request.fetch_token_status(token)
+            if type(response) == dict:
+                if response['message'].endswith('successfully'):
+                    self.redirect_to_main_window()
+            elif self.EXPIRE == False:
+                self.EXPIRE = True
+                expireMessage = QMessageBox()
+                expireMessage.setWindowTitle("登录失败")
+                expireMessage.setText("登录过期，请重新登录！")
+                expireMessage.addButton(QMessageBox.StandardButton.Ok)
+                expireMessage.exec()
 
 
     def login_check(self):
         username = self.ui.lineUsername.text()
         password = self.ui.linePassword.text()
-        with request.fetch_login_status(username, password) as response:
-            if response.status_code == 200:
-                token = response.json()['token']
-                with open("cache.json", "w") as file:
-                    json.dump({'token': token}, file)
-                self.redirect_to_main_window()
-            else:
-                errorMessage = QMessageBox()
-                errorMessage.setWindowTitle("登录失败")
-                errorMessage.setText("用户名或密码错误！")
-                errorMessage.addButton(QMessageBox.StandardButton.Ok)
-                errorMessage.exec()
+        response = request.fetch_login_status(username, password)
+        if type(response) == dict:
+            token = response['token']
+            with open("cache.json", "w") as file:
+                json.dump({'token': token}, file)
+            self.redirect_to_main_window()
+        else:
+            errorMessage = QMessageBox()
+            errorMessage.setWindowTitle("登录失败")
+            errorMessage.setText("用户名或密码错误！")
+            errorMessage.addButton(QMessageBox.StandardButton.Ok)
+            errorMessage.exec()
 
     def center(self):
         # 获取主屏幕对象
