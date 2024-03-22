@@ -1,25 +1,29 @@
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QGuiApplication, QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QSizePolicy, QVBoxLayout,
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
+from PySide6.QtGui import (QFont, QPixmap)
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QLabel,
+    QLineEdit, QPushButton, QVBoxLayout,
     QWidget, QMessageBox)
+from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox
 import os
 import json
-from ui.register_ui import RegisterWindow
-from ui.main_window_ui import MainWindow
+from . import center
+from .register_ui import RegisterWindow
+from .main_window_ui import MainWindow
 from util.request import request
+
+
+class FrameView(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.Shape.NoFrame)
+        self.setFrameShadow(QFrame.Shadow.Plain)
 
 class Ui_LoginWidget(object):
     def setupUi(self, LoginWidget):
         if not LoginWidget.objectName():
             LoginWidget.setObjectName(u"LoginWidget")
         LoginWidget.resize(664, 539)
-        self.lbWelcome = QLabel(LoginWidget)
+        self.lbWelcome = TitleLabel(LoginWidget)
         self.lbWelcome.setObjectName(u"lbWelcome")
         self.lbWelcome.setGeometry(QRect(180, 80, 321, 61))
         font = QFont()
@@ -31,22 +35,20 @@ class Ui_LoginWidget(object):
         self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.frameUsername = QFrame(self.widget)
+        self.frameUsername = FrameView(self.widget)
         self.frameUsername.setObjectName(u"frameUsername")
-        self.frameUsername.setFrameShape(QFrame.StyledPanel)
-        self.frameUsername.setFrameShadow(QFrame.Raised)
         self.layoutWidget = QWidget(self.frameUsername)
         self.layoutWidget.setObjectName(u"layoutWidget")
         self.layoutWidget.setGeometry(QRect(10, 10, 198, 35))
         self.usernameLayout = QHBoxLayout(self.layoutWidget)
         self.usernameLayout.setObjectName(u"usernameLayout")
         self.usernameLayout.setContentsMargins(0, 0, 0, 0)
-        self.lbUsername = QLabel(self.layoutWidget)
+        self.lbUsername = SubtitleLabel(self.layoutWidget)
         self.lbUsername.setObjectName(u"lbUsername")
 
         self.usernameLayout.addWidget(self.lbUsername)
 
-        self.lineUsername = QLineEdit(self.layoutWidget)
+        self.lineUsername = LineEdit(self.layoutWidget)
         self.lineUsername.setObjectName(u"lineUsername")
 
         self.usernameLayout.addWidget(self.lineUsername)
@@ -54,22 +56,20 @@ class Ui_LoginWidget(object):
 
         self.verticalLayout.addWidget(self.frameUsername)
 
-        self.framePassword = QFrame(self.widget)
+        self.framePassword = FrameView(self.widget)
         self.framePassword.setObjectName(u"framePassword")
-        self.framePassword.setFrameShape(QFrame.StyledPanel)
-        self.framePassword.setFrameShadow(QFrame.Raised)
         self.layoutWidget1 = QWidget(self.framePassword)
         self.layoutWidget1.setObjectName(u"layoutWidget1")
         self.layoutWidget1.setGeometry(QRect(10, 10, 197, 35))
         self.passwordLayout = QHBoxLayout(self.layoutWidget1)
         self.passwordLayout.setObjectName(u"passwordLayout")
         self.passwordLayout.setContentsMargins(0, 0, 0, 0)
-        self.lbPassword = QLabel(self.layoutWidget1)
+        self.lbPassword = SubtitleLabel(self.layoutWidget1)
         self.lbPassword.setObjectName(u"lbPassword")
 
         self.passwordLayout.addWidget(self.lbPassword)
 
-        self.linePassword = QLineEdit(self.layoutWidget1)
+        self.linePassword = LineEdit(self.layoutWidget1)
         self.linePassword.setObjectName(u"linePassword")
 
         self.passwordLayout.addWidget(self.linePassword)
@@ -77,22 +77,20 @@ class Ui_LoginWidget(object):
 
         self.verticalLayout.addWidget(self.framePassword)
 
-        self.frameButton = QFrame(self.widget)
+        self.frameButton = FrameView(self.widget)
         self.frameButton.setObjectName(u"frameButton")
-        self.frameButton.setFrameShape(QFrame.StyledPanel)
-        self.frameButton.setFrameShadow(QFrame.Raised)
         self.widget1 = QWidget(self.frameButton)
         self.widget1.setObjectName(u"widget1")
         self.widget1.setGeometry(QRect(30, 10, 176, 37))
         self.buttonLayout = QHBoxLayout(self.widget1)
         self.buttonLayout.setObjectName(u"buttonLayout")
         self.buttonLayout.setContentsMargins(0, 0, 0, 0)
-        self.loginButton = QPushButton(self.widget1)
+        self.loginButton = PushButton(self.widget1)
         self.loginButton.setObjectName(u"loginButton")
 
         self.buttonLayout.addWidget(self.loginButton)
 
-        self.registerButton = QPushButton(self.widget1)
+        self.registerButton = PushButton(self.widget1)
         self.registerButton.setObjectName(u"registerButton")
 
         self.buttonLayout.addWidget(self.registerButton)
@@ -121,10 +119,10 @@ class LoginWindow(QWidget):
         super().__init__()
         self.ui = Ui_LoginWidget()
         self.ui.setupUi(self)
-        self.setWindowTitle("Login")
+        self.setWindowTitle("登录")
         self.cam = cam
         self.ocr = ocr
-        self.center()
+        center(self)
 
 
         self.lbBackground = QLabel(self)
@@ -183,18 +181,3 @@ class LoginWindow(QWidget):
             errorMessage.setText("用户名或密码错误！")
             errorMessage.addButton(QMessageBox.StandardButton.Ok)
             errorMessage.exec()
-
-    def center(self):
-        # 获取主屏幕对象
-        screen = QGuiApplication.primaryScreen()
-        screen_geometry = screen.geometry()
-
-        # 获取窗口的尺寸
-        window_geometry = self.frameGeometry()
-
-        # 计算窗口居中时的左上角坐标
-        x = screen_geometry.center().x() - window_geometry.width() / 2
-        y = screen_geometry.center().y() - window_geometry.height() / 2
-
-        # 移动窗口到居中位置
-        self.move(x, y)

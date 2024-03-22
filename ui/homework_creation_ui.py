@@ -1,7 +1,7 @@
 import sys
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout
-from qfluentwidgets import PushButton, LineEdit, ComboBox, SubtitleLabel, CalendarPicker, Dialog
+from qfluentwidgets import PushButton, ComboBox, SubtitleLabel, CalendarPicker, Dialog
 from qfluentwidgets import FluentIcon as FIF
 from . import center
 

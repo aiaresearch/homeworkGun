@@ -1,19 +1,10 @@
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-                            QMetaObject, QObject, QPoint, QRect,
-                            QSize, QTime, QUrl, Qt, QTimer)
-from PySide6.QtGui import (QAction, QBrush, QCloseEvent, QColor, QConicalGradient,
-                           QCursor, QFont, QFontDatabase, QGradient,
-                           QIcon, QImage, QKeySequence, QLinearGradient,
-                           QPainter, QPalette, QPixmap, QRadialGradient,
-                           QTransform)
-from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QListView,
-                               QMainWindow, QMenu, QMenuBar, QScrollArea,
-                               QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
-                               QWidget, QPushButton, QMessageBox, QListWidgetItem)
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
+                            Qt, QTimer)
+from PySide6.QtGui import (QAction, QImage, QPixmap)
+from PySide6.QtWidgets import (QLabel, QMainWindow, QMenu, QMenuBar, QScrollArea,
+                               QStatusBar, QWidget, QMessageBox, QListWidgetItem)
 from qfluentwidgets import (ListWidget, TableWidget, PushButton)
 import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
 from .homework_creation_ui import HomeworkCreationWindow
 from util.database import init_client_db, insertion, get_homework
 from util.request import request
@@ -96,17 +87,16 @@ class MainWindow(QMainWindow):
         self.ocr = ocr
         self.students = []
         self.homeworks = []
-        self.submissions = []
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setStyleSheet("MainWindow{background: rgb(255, 255, 255)}")
         center(self)
-        if os.path.exists(os.path.join(os.path.dirname(__file__), os.pardir, 'homework.db')):
+        self.INIT = False
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), os.pardir, 'homework.db')):
             self.INIT = True
         if self.INIT:
             init_client_db.database_init()
             self.get_homework()
-            self.get_submission()
             self.get_students()
         self.setWindowTitle("作业提交系统")
 
@@ -163,10 +153,6 @@ class MainWindow(QMainWindow):
 
     def get_homework(self):
         self.homeworks = get_homework.get_homework()
-
-
-    def get_submission(self):
-        pass
 
 
     def get_students(self):
