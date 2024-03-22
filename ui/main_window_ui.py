@@ -1,7 +1,7 @@
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
                             QMetaObject, QObject, QPoint, QRect,
                             QSize, QTime, QUrl, Qt, QTimer)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+from PySide6.QtGui import (QAction, QBrush, QCloseEvent, QColor, QConicalGradient,
                            QCursor, QFont, QFontDatabase, QGradient,
                            QIcon, QImage, QKeySequence, QLinearGradient,
                            QPainter, QPalette, QPixmap, QRadialGradient,
@@ -9,12 +9,15 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QListView,
                                QMainWindow, QMenu, QMenuBar, QScrollArea,
                                QSizePolicy, QStatusBar, QTableWidget, QTableWidgetItem,
-                               QWidget, QPushButton, QMessageBox)
+                               QWidget, QPushButton, QMessageBox, QListWidgetItem)
+from qfluentwidgets import (ListWidget, TableWidget, PushButton)
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
-from ui.homework_creation_ui import HomeworkCreationWindow
-from util.database import init_client_db, insertion
+from .homework_creation_ui import HomeworkCreationWindow
+from util.database import init_client_db, insertion, get_homework
+from util.request import request
+from . import subjects, center
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -25,7 +28,7 @@ class Ui_MainWindow(object):
         self.actionExit.setObjectName(u"actionExit")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.homeworkList = QListView(self.centralwidget)
+        self.homeworkList = ListWidget(self.centralwidget)
         self.homeworkList.setObjectName(u"homeworkList")
         self.homeworkList.setGeometry(QRect(10, 20, 201, 531))
         self.lbCam = QLabel(self.centralwidget)
@@ -38,10 +41,10 @@ class Ui_MainWindow(object):
         self.lbText.setGeometry(QRect(370, 20, 320, 16))
         self.lbText.setTextFormat(Qt.TextFormat.PlainText)
         self.lbText.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.capButton = QPushButton(self.centralwidget)
+        self.capButton = PushButton(self.centralwidget)
         self.capButton.setObjectName(u"capButton")
         self.capButton.setGeometry(QRect(250, 100, 101, 31))
-        self.createButton = QPushButton(self.centralwidget)
+        self.createButton = PushButton(self.centralwidget)
         self.createButton.setObjectName(u"createButton")
         self.createButton.setGeometry(QRect(250, 140, 101, 31))
         self.scrollArea = QScrollArea(self.centralwidget)
@@ -51,7 +54,7 @@ class Ui_MainWindow(object):
         self.SubmissionScroll = QWidget()
         self.SubmissionScroll.setObjectName(u"SubmissionScroll")
         self.SubmissionScroll.setGeometry(QRect(0, 0, 318, 238))
-        self.submissionTable = QTableWidget(self.SubmissionScroll)
+        self.submissionTable = TableWidget(self.SubmissionScroll)
         self.submissionTable.setObjectName(u"submissionTable")
         self.submissionTable.setGeometry(QRect(0, 0, 320, 240))
         self.scrollArea.setWidget(self.SubmissionScroll)
@@ -91,20 +94,34 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.cam = cam
         self.ocr = ocr
+        self.students = []
+        self.homeworks = []
+        self.submissions = []
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        init_client_db.database_init()
+        self.setStyleSheet("MainWindow{background: rgb(255, 255, 255)}")
+        center(self)
+        if os.path.exists(os.path.join(os.path.dirname(__file__), os.pardir, 'homework.db')):
+            self.INIT = True
+        if self.INIT:
+            init_client_db.database_init()
+            self.get_homework()
+            self.get_submission()
+            self.get_students()
         self.setWindowTitle("作业提交系统")
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_camera)
         self.timer.start(1000 // 30)
 
+        self.fill_homework_list()
+
+        # self.ui.homeworkList.itemClicked.connect(self.show_submission)
+
         self.ui.capButton.clicked.connect(self.scan)
         self.ui.createButton.clicked.connect(self.create_homework)
         self.ui.actionExit.triggered.connect(self.close)
 
-        self.buffer = {"homeworks": [], "submissions": []}
 
     def update_camera(self):
         if self.cam is not None:
@@ -115,6 +132,7 @@ class MainWindow(QMainWindow):
 
             self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
             self.ui.lbCam.setScaledContents(True)
+
 
     def scan(self):
         if self.cam is not None:
@@ -136,19 +154,26 @@ class MainWindow(QMainWindow):
         self.create.show()
 
 
-    def handleCreation(self, title, subject, start_time, end_time):
-        homework_id = insertion.insert_homework_creation(title, subject, start_time, end_time)
-        self.buffer['homeworks'].append((homework_id, title, subject, start_time, end_time))
-        print(self.buffer)
+    def handleCreation(self, subject, start_time, end_time):
+        homework_id = insertion.insert_homework_creation(subject, start_time, end_time)
+        self.homeworks.append((homework_id, subject, start_time, end_time))
+        self.fill_homework_list()
+        request.create_homework(homework_id, subject, start_time, end_time)
 
 
-    def fetch_homework(self):
-        ...
+    def get_homework(self):
+        self.homeworks = get_homework.get_homework()
 
 
-    def fetch_submission(self):
-        ...
+    def get_submission(self):
+        pass
 
 
-    def fetch_students(self):
-        ...
+    def get_students(self):
+        pass
+
+    
+    def fill_homework_list(self):
+        for homework in self.homeworks:
+            item = QListWidgetItem(f"{subjects[homework[1]]} 作业 {homework[3][5:]} 截止")
+            self.ui.homeworkList.addItem(item)
