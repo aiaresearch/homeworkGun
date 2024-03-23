@@ -20,16 +20,18 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout,
     QLineEdit, QPushButton, QSizePolicy, QVBoxLayout,
     QWidget, QMessageBox)
+from qfluentwidgets import FluentWindow, PushButton, LineEdit, TitleLabel, SubtitleLabel
+from . import center, FrameView
 
 class Ui_registerWindow(object):
     def setupUi(self, registerWindow):
         if not registerWindow.objectName():
             registerWindow.setObjectName(u"registerWindow")
         registerWindow.resize(450, 393)
-        self.lbRegister = QLabel(registerWindow)
+        self.lbRegister = TitleLabel(registerWindow)
         self.lbRegister.setObjectName(u"lbRegister")
         self.lbRegister.setGeometry(QRect(120, 70, 221, 61))
         font = QFont()
@@ -42,22 +44,20 @@ class Ui_registerWindow(object):
         self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.usernameFrame = QFrame(self.widget)
+        self.usernameFrame = FrameView(self.widget)
         self.usernameFrame.setObjectName(u"usernameFrame")
-        self.usernameFrame.setFrameShape(QFrame.StyledPanel)
-        self.usernameFrame.setFrameShadow(QFrame.Raised)
         self.widget1 = QWidget(self.usernameFrame)
         self.widget1.setObjectName(u"widget1")
         self.widget1.setGeometry(QRect(10, 10, 211, 51))
         self.usernameLayout = QHBoxLayout(self.widget1)
         self.usernameLayout.setObjectName(u"usernameLayout")
         self.usernameLayout.setContentsMargins(0, 0, 0, 0)
-        self.lbUsername = QLabel(self.widget1)
+        self.lbUsername = SubtitleLabel(self.widget1)
         self.lbUsername.setObjectName(u"lbUsername")
 
         self.usernameLayout.addWidget(self.lbUsername)
 
-        self.inputUsername = QLineEdit(self.widget1)
+        self.inputUsername = LineEdit(self.widget1)
         self.inputUsername.setObjectName(u"inputUsername")
 
         self.usernameLayout.addWidget(self.inputUsername)
@@ -65,22 +65,21 @@ class Ui_registerWindow(object):
 
         self.verticalLayout.addWidget(self.usernameFrame)
 
-        self.passwordFrame = QFrame(self.widget)
+        self.passwordFrame = FrameView(self.widget)
         self.passwordFrame.setObjectName(u"passwordFrame")
-        self.passwordFrame.setFrameShape(QFrame.StyledPanel)
-        self.passwordFrame.setFrameShadow(QFrame.Raised)
         self.layoutWidget = QWidget(self.passwordFrame)
         self.layoutWidget.setObjectName(u"layoutWidget")
         self.layoutWidget.setGeometry(QRect(10, 0, 211, 71))
         self.passwordLayout = QHBoxLayout(self.layoutWidget)
         self.passwordLayout.setObjectName(u"passwordLayout")
         self.passwordLayout.setContentsMargins(0, 0, 0, 0)
-        self.lbPassword = QLabel(self.layoutWidget)
+        self.lbPassword = SubtitleLabel(self.layoutWidget)
         self.lbPassword.setObjectName(u"lbPassword")
 
         self.passwordLayout.addWidget(self.lbPassword)
 
-        self.inputPassword = QLineEdit(self.layoutWidget)
+        self.inputPassword = LineEdit(self.layoutWidget)
+        self.inputPassword.setEchoMode(LineEdit.EchoMode.Password)
         self.inputPassword.setObjectName(u"inputPassword")
 
         self.passwordLayout.addWidget(self.inputPassword)
@@ -88,7 +87,7 @@ class Ui_registerWindow(object):
 
         self.verticalLayout.addWidget(self.passwordFrame)
 
-        self.registerButton = QPushButton(self.widget)
+        self.registerButton = PushButton(self.widget)
         self.registerButton.setObjectName(u"registerButton")
 
         self.verticalLayout.addWidget(self.registerButton)
@@ -109,13 +108,15 @@ class Ui_registerWindow(object):
         self.registerButton.setText(QCoreApplication.translate("registerWindow", u"\u6ce8\u518c", None))
     # retranslateUi
 
-class RegisterWindow(QWidget):
+class RegisterWindow(FluentWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_registerWindow()
         self.ui.setupUi(self)
+        self.setStyleSheet("RegisterWindow{background: rgb(255, 255, 255)} ")
 
         self.ui.registerButton.clicked.connect(self.register)
+        center(self)
 
 
     def register(self):

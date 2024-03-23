@@ -4,17 +4,11 @@ from PySide6.QtWidgets import (QFrame, QHBoxLayout, QVBoxLayout, QWidget, QMessa
 from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox, FluentWindow
 import os
 import json
-from . import center
+from . import center, FrameView
 from .register_ui import RegisterWindow
 from .main_window_ui import MainWindow
 from util.request import request
 
-
-class FrameView(QFrame):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setFrameShape(QFrame.Shape.NoFrame)
-        self.setFrameShadow(QFrame.Shadow.Plain)
 
 class Ui_LoginWidget(object):
     def setupUi(self, LoginWidget):
@@ -68,6 +62,7 @@ class Ui_LoginWidget(object):
         self.passwordLayout.addWidget(self.lbPassword)
 
         self.linePassword = LineEdit(self.layoutWidget1)
+        self.linePassword.setEchoMode(LineEdit.EchoMode.Password)
         self.linePassword.setObjectName(u"linePassword")
 
         self.passwordLayout.addWidget(self.linePassword)
@@ -136,7 +131,7 @@ class LoginWindow(FluentWindow):
         return os.path.exists("cache.json")
 
     def redirect_to_register_window(self):
-        if not self.REDIRECTED_REG:
+        if self.REDIRECTED_REG:
             return 
         
         self.REDIRECTED_REG = True

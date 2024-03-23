@@ -1,5 +1,5 @@
 from PySide6.QtGui import QGuiApplication
-from PySide6.QtWidgets import QMainWindow, QWidget
+from PySide6.QtWidgets import QMainWindow, QWidget, QFrame
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
@@ -15,3 +15,10 @@ def center(w : QWidget | QMainWindow):
     x = screen_geometry.center().x() - window_geometry.width() / 2
     y = screen_geometry.center().y()- window_geometry.height() / 2
     w.move(x, y)
+
+
+class FrameView(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.Shape.NoFrame)
+        self.setFrameShadow(QFrame.Shadow.Plain)
