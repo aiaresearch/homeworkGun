@@ -99,7 +99,7 @@ class Ui_LoginWidget(object):
 
     def retranslateUi(self, LoginWidget):
         LoginWidget.setWindowTitle(QCoreApplication.translate("LoginWidget", u"Form", None))
-        self.lbWelcome.setText(QCoreApplication.translate("LoginWidget", u"Welcome!", None))
+        self.lbWelcome.setText(QCoreApplication.translate("LoginWidget", u"欢迎使用", None))
         self.lbUsername.setText(QCoreApplication.translate("LoginWidget", u"\u7528\u6237\u540d:", None))
         self.lbPassword.setText(QCoreApplication.translate("LoginWidget", u"\u5bc6\u7801:", None))
         self.loginButton.setText(QCoreApplication.translate("LoginWidget", u"\u767b\u5f55", None))
