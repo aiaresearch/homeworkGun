@@ -1,5 +1,5 @@
 cnocr[ort-cpu]
 zhipuai
 pyside6
-qt-material
+PySide6-Fluent-Widgets[full]
 pyinstaller
