@@ -16,7 +16,7 @@ func GetStudentsByClass(c *gin.Context) {
 		return
 	}
 
-	query := "SELECT name FROM students_list WHERE class = $1"
+	query := "SELECT name, school_id FROM students_list WHERE class = $1"
 	rows, err := db.Query(query, classValue)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error executing query"})
@@ -24,15 +24,17 @@ func GetStudentsByClass(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var names []string
+	var results []map[string]interface{}
 	for rows.Next() {
 		var name string
-		if err := rows.Scan(&name); err != nil {
+		var schoolID int
+		if err := rows.Scan(&name, &schoolID); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning rows"})
 			return
 		}
-		names = append(names, name)
+		result := map[string]interface{}{"name": name, "school_id": schoolID}
+		results = append(results, result)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"names": names})
+	c.JSON(http.StatusOK, gin.H{"students": results})
 }
