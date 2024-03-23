@@ -6,7 +6,7 @@ def PortList():
     ports = serial.tools.list_ports.comports()
     return [port.device for port in ports]
 
-def search_newport(initial_ports):
+def Search_newport(initial_ports):
     while True:
         current_ports = PortList()
         new_ports = list(set(current_ports) - set(initial_ports))
@@ -14,15 +14,15 @@ def search_newport(initial_ports):
             return new_ports[0]  # 返回找到的第一个新串口
         time.sleep(1)  # 短暂等待后再次检查
 
-def select_port():
+def select_serial_port():
     initial_ports = PortList()
     print("等待扫描枪插入...")
-    selected_port = search_newport(initial_ports)
+    selected_port = Search_newport(initial_ports)
     print(f"检测到新串口，已选择 {selected_port}")
     return selected_port
 
 BAUD_RATE = 9600
-serial_port = select_port()
+serial_port = select_serial_port()
 
 if serial_port:
     try:
@@ -35,7 +35,7 @@ if serial_port:
                     data = ser.readline().decode().strip()
                     print(data)  # 显示接收到的数据
                     if data == "ButtonPressed":
-                        print("开始拍摄")
+                        print("开始拍摄,请持稳设备。")
                         ser.write("Received\n".encode())  # 向串口发送确认消息
         except KeyboardInterrupt:
             print("\n程序被用户中断。")

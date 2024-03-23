@@ -4,3 +4,7 @@ keyboard
 toml
 psycopg2-binary
 zhipuai
+pyserial
+pillow
+opencv-python
+numpy
