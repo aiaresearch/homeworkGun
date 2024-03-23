@@ -12,9 +12,8 @@ else:
 
 def fetch_student(class_id):
     endpoint = "/students"
-    data = {"class": class_id}
-    query_string = urllib.parse.urlencode(data)
-    url = f"{ADDR}{endpoint}?{query_string}"
+    data = json.dumps({"class": class_id})
+    url = f"{ADDR}{endpoint}"
     try:
         response = requests.get(url, data=data)
         response.raise_for_status()
@@ -89,26 +88,22 @@ def fetch_register_status(username, password):
 
 def create_homework(homework_id, subject, start_date, end_date):
     endpoint = "/create"
-    data = {"homework_id": homework_id, "submission_required": subject, "start_date": start_date, "end_date": end_date}
-    print(data)
-    url = f"{ADDR}{endpoint}"
-    try:
-        response = requests.post(url, json=data)
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        raise Exception(e)
-    else:
-        return response.json()
-
-
-def submit_homework(school_id, subject, homework_id):
-    endpoint = "/submit"
-    data = {"school_id": school_id, "subject_id": subject, "homework_id": homework_id}
+    data = json.dumps({"homework_id": homework_id, "submission_required": subject, "start_date": start_date, "end_date": end_date})
     url = f"{ADDR}{endpoint}"
     try:
         response = requests.post(url, data=data)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         raise Exception(e)
-    else:
-        return response.json()
+
+
+def submit_homework(school_id, subject, homework_id):
+    endpoint = "/submit"
+    print(type(school_id), type(subject), type(homework_id))
+    data = json.dumps({"school_id": school_id, "subject_id": subject, "homework_id": homework_id})
+    url = f"{ADDR}{endpoint}"
+    try:
+        response = requests.post(url, data=data)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        raise Exception(e)

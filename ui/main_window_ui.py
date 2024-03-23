@@ -93,11 +93,12 @@ class MainWindow(FluentWindow):
 
 
     def init_window(self):
-        init_client_db.database_init()
         
         if not os.path.exists(os.path.join(os.path.dirname(__file__), os.pardir, 'homework.db')):
+            init_client_db.database_init()
             self.fetch_students()
-            
+        
+        init_client_db.database_init()
         self.fetch_homework()
         self.load_students()
         
@@ -115,7 +116,6 @@ class MainWindow(FluentWindow):
 
 
     def scan(self):
-        self.submit_homework(self.ui.homeworkList.currentItem().homework_id, '37013120193')
         if self.cam is not None:
             img = self.cam.capture()
             scanned_ids = self.ocr.ocr(img, det_kwargs={'min_box_size': 10})
@@ -143,8 +143,7 @@ class MainWindow(FluentWindow):
         insertion.insert_homework(homework_id, subject, start_time, end_time)
         self.homeworks.append((homework_id, subject, start_time, end_time))
         self.fill_homework_list()
-        request_status = request.create_homework(homework_id, subject, start_time, end_time)
-        print(request_status)
+        request.create_homework(homework_id, str(subject), start_time, end_time)
 
 
     def fetch_homework(self):
@@ -156,6 +155,7 @@ class MainWindow(FluentWindow):
 
     def fetch_students(self):
         self.students = request.fetch_student(class_id=12)
+        print(self.students)
         insertion.insert_students(self.students)
 
 
@@ -186,6 +186,4 @@ class MainWindow(FluentWindow):
 
     def submit_homework(self, homework_id, school_id):
         subject = insertion.insert_submission(homework_id, school_id)
-        print(type(homework_id), type(school_id), type(subject))
-        request_status = request.submit_homework(school_id, subject, homework_id)
-        print(request_status)
+        request.submit_homework(school_id, subject, homework_id)
