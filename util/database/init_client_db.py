@@ -8,11 +8,13 @@ def database_init():
     
     conn = get_connection()
     cursor = conn.cursor()
+    
     cursor.execute('''CREATE TABLE IF NOT EXISTS students (
                     school_id INT PRIMARY KEY NOT NULL,
                     name VARCHAR(255) NOT NULL
     );''')
 
+    cursor.execute('''DROP TABLE IF EXISTS homeworks;''')
     cursor.execute('''CREATE TABLE IF NOT EXISTS homeworks (
                    homework_id INT PRIMARY KEY NOT NULL,
                    subject INT NOT NULL,

@@ -1,9 +1,7 @@
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
-from PySide6.QtGui import (QFont, QPixmap)
-from PySide6.QtWidgets import (QFrame, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QVBoxLayout,
-    QWidget, QMessageBox)
-from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QVBoxLayout, QWidget, QMessageBox)
+from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox, FluentWindow
 import os
 import json
 from . import center
@@ -114,7 +112,7 @@ class Ui_LoginWidget(object):
     # retranslateUi
 
 
-class LoginWindow(QWidget):
+class LoginWindow(FluentWindow):
     def __init__(self, cam, ocr):
         super().__init__()
         self.ui = Ui_LoginWidget()
@@ -124,13 +122,9 @@ class LoginWindow(QWidget):
         self.ocr = ocr
         center(self)
 
-
-        self.lbBackground = QLabel(self)
-        self.lbBackground.setPixmap(QPixmap("./ui/resources/zh1z.png"))
-        self.lbBackground.setScaledContents(True)
-        self.lbBackground.show()
-        self.lbBackground.lower()
         self.EXPIRE = False
+        self.REDIRECTED_MAIN = False
+        self.REDIRECTED_REG = False
 
         if self.detect_cfg_existence():
             self.token_check()
@@ -142,10 +136,18 @@ class LoginWindow(QWidget):
         return os.path.exists("cache.json")
 
     def redirect_to_register_window(self):
+        if not self.REDIRECTED_REG:
+            return 
+        
+        self.REDIRECTED_REG = True
         self.register_window = RegisterWindow()
         self.register_window.show()
 
     def redirect_to_main_window(self):
+        if self.REDIRECTED_MAIN:
+            return
+        
+        self.REDIRECTED_MAIN = True
         self.close()
         self.main_window = MainWindow(self.cam, self.ocr)
         self.main_window.show()
@@ -164,6 +166,7 @@ class LoginWindow(QWidget):
                 expireMessage.setText("登录过期，请重新登录！")
                 expireMessage.addButton(QMessageBox.StandardButton.Ok)
                 expireMessage.exec()
+                self.show()
 
 
     def login_check(self):
