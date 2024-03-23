@@ -2,33 +2,38 @@ import serial
 import time
 import serial.tools.list_ports
 
-def SelectSerialPort():
+def PortList():
     ports = serial.tools.list_ports.comports()
-    if not ports:
-        print("没有找到任何可用的串口！")
-        return None
+    return [port.device for port in ports]
 
-    sorted_ports = sorted(ports, key=lambda x: x.device)
-    selected_port = sorted_ports[-1].device
-    
-    print(f"自动选择了串口 {selected_port}")
+def search_newport(initial_ports):
+    while True:
+        current_ports = PortList()
+        new_ports = list(set(current_ports) - set(initial_ports))
+        if new_ports:
+            return new_ports[0]  # 返回找到的第一个新串口
+        time.sleep(1)  # 短暂等待后再次检查
+
+def select_port():
+    initial_ports = PortList()
+    print("等待扫描枪插入...")
+    selected_port = search_newport(initial_ports)
+    print(f"检测到新串口，已选择 {selected_port}")
     return selected_port
+
 BAUD_RATE = 9600
-serial_port = SelectSerialPort()
+serial_port = select_port()
 
 if serial_port:
     try:
         ser = serial.Serial(serial_port, BAUD_RATE, timeout=1)
         time.sleep(1)
-
         print("开始读取数据...")
         try:
             while True:
-                # 读取串口数据
                 if ser.in_waiting > 0:
                     data = ser.readline().decode().strip()
-                    print(data)  # 在控制台上显示接收到的数据
-                    # 检查是否接收到特定的字符串
+                    print(data)  # 显示接收到的数据
                     if data == "ButtonPressed":
                         print("开始拍摄")
                         ser.write("Received\n".encode())  # 向串口发送确认消息
@@ -40,4 +45,4 @@ if serial_port:
     except serial.SerialException:
         print(f"无法打开串口 {serial_port}，请检查配置。")
 else:
-    print("未选择任何串口，程序退出。")
+    print("未检测到新串口，程序退出。")
