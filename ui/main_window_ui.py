@@ -8,7 +8,9 @@ import os
 from .homework_creation_ui import HomeworkCreationWindow
 from util.database import init_client_db, insertion, query
 from util.request import request
+from util.cap import read_frame
 from . import subjects, center
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -67,9 +69,8 @@ class HomeworkListItem(QListWidgetItem):
 
 
 class MainWindow(FluentWindow):
-    def __init__(self, cam, ocr):
+    def __init__(self, ocr):
         super().__init__()
-        self.cam = cam
         self.ocr = ocr
         self.students = []
         self.homeworks = []
@@ -105,8 +106,7 @@ class MainWindow(FluentWindow):
 
 
     def update_camera(self):
-        if self.cam is not None:
-            img = self.cam.capture()
+            img = read_frame()
             height, width, _ = img.shape
             bytesPerLine = 3 * width
             qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
@@ -116,19 +116,18 @@ class MainWindow(FluentWindow):
 
 
     def scan(self):
-        if self.cam is not None:
-            img = self.cam.capture()
-            scanned_ids = self.ocr.ocr(img, det_kwargs={'min_box_size': 10})
-            message = ''
-            for scanned_id in scanned_ids:
-                message = message + ' ' + scanned_id['text']
-            self.ui.lbText.setText(f"识别结果：{message}")
-            for student_id in scanned_ids:
-                if student_id['text'] not in self.students:
-                    self.ui.lbText.setText(f"识别结果：{message}\n未找到该学生")
-                else:
-                    self.ui.lbText.setText(f"识别结果：{message}\n提交成功")
-                    self.submit_homework(self.ui.homeworkList.currentItem().homework_id, student_id['text'])
+        img = read_frame()
+        scanned_ids = self.ocr.ocr(img, det_kwargs={'min_box_size': 10})
+        message = ''
+        for scanned_id in scanned_ids:
+            message = message + ' ' + scanned_id['text']
+        self.ui.lbText.setText(f"识别结果：{message}")
+        for student_id in scanned_ids:
+            if student_id['text'] not in self.students:
+                self.ui.lbText.setText(f"识别结果：{message}\n未找到该学生")
+            else:
+                self.ui.lbText.setText(f"识别结果：{message}\n提交成功")
+                self.submit_homework(self.ui.homeworkList.currentItem().homework_id, student_id['text'])
 
 
     def create_homework(self):

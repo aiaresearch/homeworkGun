@@ -1,34 +1,20 @@
 import cv2
+import numpy as np
+import urllib.request
 
-
-class Camera:
-
-    def __init__(self, source=0) -> None:
-        self.source = source
-        try:
-            self.cap = cv2.VideoCapture(source)
-            self.capture()  # Warm up
-        except Exception:
-            raise Exception(f"Camera: Failed to open source {source}")
-
-    def capture(self, num_retry=2):
-        for _ in range(num_retry):
-            _, frame = self.cap.read()
-            if frame.shape[0] > 0 and frame.shape[1] > 0:
-                return frame
-
-        raise Exception(f"Camera: Failed to read from source {self.source} after retrying {num_retry} times.")
-
-    def __del__(self):
-        self.cap.release()
-
-
-if __name__ == '__main__':
-    cam = Camera()
+# Function to read frames from the ESP32-CAM
+def read_frame(stream_url = 'http://192.168.31.23/mjpeg/1'):
+    stream = urllib.request.urlopen(stream_url)
+    bytes = b''
     while True:
-        img = cam.capture()
-        cv2.imshow('Captured Image', img)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
+        bytes += stream.read(1024)
+        a = bytes.find(b'\xff\xd8')
+        b = bytes.find(b'\xff\xd9')
+        if a != -1 and b != -1:
+            jpg = bytes[a:b+2]
+            # bytes = bytes[b+2:]
+            frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+            if frame is not None:
+                return frame
+            else:
+                raise Exception('Failed to decode frame')

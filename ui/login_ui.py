@@ -108,12 +108,11 @@ class Ui_LoginWidget(object):
 
 
 class LoginWindow(FluentWindow):
-    def __init__(self, cam, ocr):
+    def __init__(self, ocr):
         super().__init__()
         self.ui = Ui_LoginWidget()
         self.ui.setupUi(self)
         self.setWindowTitle("登录")
-        self.cam = cam
         self.ocr = ocr
         center(self)
 
@@ -144,7 +143,7 @@ class LoginWindow(FluentWindow):
         
         self.REDIRECTED_MAIN = True
         self.close()
-        self.main_window = MainWindow(self.cam, self.ocr)
+        self.main_window = MainWindow(self.ocr)
         self.main_window.show()
 
     def token_check(self):
