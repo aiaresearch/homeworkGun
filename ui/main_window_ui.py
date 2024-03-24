@@ -155,7 +155,6 @@ class MainWindow(FluentWindow):
 
     def fetch_students(self):
         self.students = request.fetch_student(class_id=12)
-        print(self.students)
         insertion.insert_students(self.students)
 
 

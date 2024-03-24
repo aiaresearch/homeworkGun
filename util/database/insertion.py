@@ -32,7 +32,6 @@ def insert_submission(homework_id, school_id):
     cursor = conn.cursor()
     
     cursor.execute(f"SELECT subject FROM homeworks WHERE homework_id = {homework_id};")
-    print(homework_id)
     subject = cursor.fetchone()[0]
     cursor.execute(f"INSERT INTO submissions VALUES ({subject}, {homework_id}, {school_id});")
     conn.commit()

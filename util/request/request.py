@@ -5,7 +5,7 @@ import json
 
 # if platform is windows, change the following line to your own address
 if os.name == "nt":
-    ADDR = "YOU_KNOW"
+    ADDR = "SECRET"
 else:
     ADDR = os.getenv("REQUEST_URL")
 
@@ -98,7 +98,6 @@ def create_homework(homework_id, subject, start_date, end_date):
 
 def submit_homework(school_id, subject, homework_id):
     endpoint = "/submit"
-    print(type(school_id), type(subject), type(homework_id))
     data = json.dumps({"school_id": school_id, "subject_id": subject, "homework_id": homework_id})
     url = f"{ADDR}{endpoint}"
     try:
