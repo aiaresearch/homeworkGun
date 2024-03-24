@@ -5,10 +5,12 @@ from PySide6.QtWidgets import (QLabel, QMainWindow, QMenu, QMenuBar,
                                QStatusBar, QWidget, QMessageBox, QListWidgetItem, QTableWidgetItem)
 from qfluentwidgets import (ListWidget, TableWidget, PushButton, MessageBox, FluentWindow, Action)
 import os
+import threading
 from .homework_creation_ui import HomeworkCreationWindow
 from util.database import init_client_db, insertion, query
 from util.request import request
 from util.cap import read_frame
+from util.serial_connect import detect_button_press
 from . import subjects, center
 
 
@@ -91,6 +93,9 @@ class MainWindow(FluentWindow):
         self.ui.homeworkList.itemClicked.connect(self.show_submission)
         self.ui.capButton.clicked.connect(self.scan)
         self.ui.createButton.clicked.connect(self.create_homework)
+        on_button_press = threading.Thread(target=self.on_triggered)
+        on_button_press.daemon = True
+        on_button_press.start()
 
 
     def init_window(self):
@@ -185,3 +190,9 @@ class MainWindow(FluentWindow):
     def submit_homework(self, homework_id, school_id):
         subject = insertion.insert_submission(homework_id, school_id)
         request.submit_homework(school_id, subject, homework_id)
+
+
+    def on_triggered(self):
+        while True:
+            if detect_button_press():
+                self.scan()
