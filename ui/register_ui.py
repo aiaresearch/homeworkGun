@@ -125,6 +125,5 @@ class RegisterWindow(FluentWindow):
         if username == "" or password == "":
             QMessageBox.warning(self, "警告", "用户名或密码不能为空！")
         else:
-            response = request.fetch_register_status(username, password)
-            if response.status_code == 200:
-                QMessageBox.information(self, "成功", "注册成功！")
+            request.fetch_register_status(username, password)
+            QMessageBox.information(self, "成功", "注册成功！")

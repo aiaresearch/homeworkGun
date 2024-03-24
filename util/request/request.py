@@ -5,17 +5,16 @@ import json
 
 # if platform is windows, change the following line to your own address
 if os.name == "nt":
-    ADDR = "URL"
+    ADDR = "YOU_KNOW"
 else:
     ADDR = os.getenv("REQUEST_URL")
 
 
 def fetch_student(class_id):
     endpoint = "/students"
-    data = json.dumps({"class": class_id})
-    url = f"{ADDR}{endpoint}"
+    url = f"{ADDR}{endpoint}?class={class_id}"
     try:
-        response = requests.get(url, data=data)
+        response = requests.get(url)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         raise Exception(e)
