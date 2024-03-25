@@ -1,22 +1,14 @@
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect)
-from PySide6.QtGui import (QFont, QPixmap)
-from PySide6.QtWidgets import (QFrame, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QVBoxLayout,
-    QWidget, QMessageBox)
-from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QVBoxLayout, QWidget, QMessageBox)
+from qfluentwidgets import TitleLabel, SubtitleLabel, LineEdit, PushButton, MessageBox, FluentWindow
 import os
 import json
-from . import center
+from . import center, FrameView
 from .register_ui import RegisterWindow
 from .main_window_ui import MainWindow
 from util.request import request
 
-
-class FrameView(QFrame):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setFrameShape(QFrame.Shape.NoFrame)
-        self.setFrameShadow(QFrame.Shadow.Plain)
 
 class Ui_LoginWidget(object):
     def setupUi(self, LoginWidget):
@@ -70,6 +62,7 @@ class Ui_LoginWidget(object):
         self.passwordLayout.addWidget(self.lbPassword)
 
         self.linePassword = LineEdit(self.layoutWidget1)
+        self.linePassword.setEchoMode(LineEdit.EchoMode.Password)
         self.linePassword.setObjectName(u"linePassword")
 
         self.passwordLayout.addWidget(self.linePassword)
@@ -106,7 +99,7 @@ class Ui_LoginWidget(object):
 
     def retranslateUi(self, LoginWidget):
         LoginWidget.setWindowTitle(QCoreApplication.translate("LoginWidget", u"Form", None))
-        self.lbWelcome.setText(QCoreApplication.translate("LoginWidget", u"Welcome!", None))
+        self.lbWelcome.setText(QCoreApplication.translate("LoginWidget", u"欢迎使用", None))
         self.lbUsername.setText(QCoreApplication.translate("LoginWidget", u"\u7528\u6237\u540d:", None))
         self.lbPassword.setText(QCoreApplication.translate("LoginWidget", u"\u5bc6\u7801:", None))
         self.loginButton.setText(QCoreApplication.translate("LoginWidget", u"\u767b\u5f55", None))
@@ -114,23 +107,18 @@ class Ui_LoginWidget(object):
     # retranslateUi
 
 
-class LoginWindow(QWidget):
-    def __init__(self, cam, ocr):
+class LoginWindow(FluentWindow):
+    def __init__(self, ocr):
         super().__init__()
         self.ui = Ui_LoginWidget()
         self.ui.setupUi(self)
         self.setWindowTitle("登录")
-        self.cam = cam
         self.ocr = ocr
         center(self)
 
-
-        self.lbBackground = QLabel(self)
-        self.lbBackground.setPixmap(QPixmap("./ui/resources/zh1z.png"))
-        self.lbBackground.setScaledContents(True)
-        self.lbBackground.show()
-        self.lbBackground.lower()
         self.EXPIRE = False
+        self.REDIRECTED_MAIN = False
+        self.REDIRECTED_REG = False
 
         if self.detect_cfg_existence():
             self.token_check()
@@ -142,12 +130,20 @@ class LoginWindow(QWidget):
         return os.path.exists("cache.json")
 
     def redirect_to_register_window(self):
+        if self.REDIRECTED_REG:
+            return 
+        
+        self.REDIRECTED_REG = True
         self.register_window = RegisterWindow()
         self.register_window.show()
 
     def redirect_to_main_window(self):
+        if self.REDIRECTED_MAIN:
+            return
+        
+        self.REDIRECTED_MAIN = True
         self.close()
-        self.main_window = MainWindow(self.cam, self.ocr)
+        self.main_window = MainWindow(self.ocr)
         self.main_window.show()
 
     def token_check(self):
@@ -164,6 +160,7 @@ class LoginWindow(QWidget):
                 expireMessage.setText("登录过期，请重新登录！")
                 expireMessage.addButton(QMessageBox.StandardButton.Ok)
                 expireMessage.exec()
+                self.show()
 
 
     def login_check(self):
