@@ -5,7 +5,7 @@ import json
 
 # if platform is windows, change the following line to your own address
 if os.name == "nt":
-    ADDR = "SECRET"
+    ADDR = "http://149.88.90.116:1145"
 else:
     ADDR = os.getenv("REQUEST_URL")
 
@@ -35,7 +35,7 @@ def fetch_login_status(username, password):
     except requests.exceptions.HTTPError as e:
         raise Exception(e)
     else:
-        return response.json()
+        return response
 
 
 def fetch_homeworks():
@@ -69,7 +69,7 @@ def fetch_token_status(token):
     except requests.exceptions.HTTPError as e:
         raise Exception(e)
     else:
-        return response.json()
+        return response
 
 
 def fetch_register_status(username, password):
