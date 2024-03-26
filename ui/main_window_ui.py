@@ -1,16 +1,18 @@
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
-                            Qt, QTimer)
+                            Qt, QTimer, Signal, QThread, QObject)
 from PySide6.QtGui import (QImage, QPixmap)
 from PySide6.QtWidgets import (QLabel, QMainWindow, QMenu, QMenuBar,
                                QStatusBar, QWidget, QMessageBox, QListWidgetItem, QTableWidgetItem)
 from qfluentwidgets import (ListWidget, TableWidget, PushButton, MessageBox, FluentWindow, Action)
 import os
-import threading
+import cv2
+from threading import Thread
+import serial
 from .homework_creation_ui import HomeworkCreationWindow
 from util.database import init_client_db, insertion, query
 from util.request import request
-from util.cap import read_frame
-from util.serial_connect import detect_button_press
+from util.cap import first_frame
+import util.serial_connect
 from . import subjects, center
 
 
@@ -70,6 +72,33 @@ class HomeworkListItem(QListWidgetItem):
         self.homework_id = homework_id
 
 
+class SerialThread(QObject):
+    data_received = Signal(bool)
+
+    def __init__(self, port):
+        super().__init__()
+        self.is_running = True
+        self.port = port
+
+    def run(self):
+        while self.is_running:
+            print(self.port)
+            if self.port:
+                try:
+                    ser = serial.Serial(self.port, 9600, timeout=1, bytesize=8, parity='N', stopbits=1)
+                    while self.is_running:
+                        if ser.in_waiting > 0:
+                            print("按下按钮")
+                            data = ser.readline().decode().strip()
+                            if isinstance(data, str):
+                                self.data_received.emit(True)   
+                finally:
+                    ser.close()
+
+    def stop(self):
+        self.is_running = False
+
+
 class MainWindow(FluentWindow):
     def __init__(self, ocr):
         super().__init__()
@@ -84,18 +113,11 @@ class MainWindow(FluentWindow):
         center(self)
         self.setWindowTitle("作业提交系统")
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_camera)
-        self.timer.start(1000 // 30)
-
         self.fill_homework_list()
 
         self.ui.homeworkList.itemClicked.connect(self.show_submission)
         self.ui.capButton.clicked.connect(self.scan)
         self.ui.createButton.clicked.connect(self.create_homework)
-        on_button_press = threading.Thread(target=self.on_triggered)
-        on_button_press.daemon = True
-        on_button_press.start()
 
 
     def init_window(self):
@@ -107,11 +129,23 @@ class MainWindow(FluentWindow):
         init_client_db.database_init()
         self.fetch_homework()
         self.load_students()
+        selected_port = util.serial_connect.select_serial_port()
+        self.serial_thread = QThread()
+        self.serial_worker = SerialThread(selected_port)
+        self.serial_worker.moveToThread(self.serial_thread)
+        self.serial_worker.data_received.connect(self.button_presssed)
+        self.serial_thread.started.connect(self.serial_worker.run)
+        self.serial_thread.start()
+
+    
+    def button_presssed(self, data):
+        if data:
+            self.scan()
         
 
-
     def update_camera(self):
-            img = read_frame()
+            img = first_frame()
+            img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
             height, width, _ = img.shape
             bytesPerLine = 3 * width
             qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
@@ -121,18 +155,31 @@ class MainWindow(FluentWindow):
 
 
     def scan(self):
-        img = read_frame()
+        img = first_frame()
+        img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+        height, width, _ = img.shape
+        bytesPerLine = 3 * width
+        qImg = QImage(img.data, width, height, bytesPerLine, QImage.Format.Format_BGR888)
+        self.ui.lbCam.setPixmap(QPixmap.fromImage(qImg))
+        self.ui.lbCam.setScaledContents(True)
+
         scanned_ids = self.ocr.ocr(img, det_kwargs={'min_box_size': 10})
         message = ''
         for scanned_id in scanned_ids:
             message = message + ' ' + scanned_id['text']
         self.ui.lbText.setText(f"识别结果：{message}")
         for student_id in scanned_ids:
-            if student_id['text'] not in self.students:
-                self.ui.lbText.setText(f"识别结果：{message}\n未找到该学生")
-            else:
-                self.ui.lbText.setText(f"识别结果：{message}\n提交成功")
-                self.submit_homework(self.ui.homeworkList.currentItem().homework_id, student_id['text'])
+            for student in self.students:
+                if str(student[0]) == student_id['text']:
+                    self.ui.lbText.setText(f"识别结果：{message} 提交成功")
+                    self.submit_homework(self.ui.homeworkList.currentItem().homework_id, student_id['text'])
+                    self.show_submission()
+                    break
+                    
+                self.ui.lbText.setText(f"识别结果：{message} 未找到该学生")
+
+        
+        QTimer.singleShot(2000, lambda: self.ui.lbCam.setPixmap(QPixmap()))
 
 
     def create_homework(self):
@@ -175,6 +222,7 @@ class MainWindow(FluentWindow):
             
     
     def show_submission(self):
+        self.ui.submissionTable.clear()
         item = self.ui.homeworkList.currentItem()
         homework_id = item.homework_id
         self.ui.submissionTable.setRowCount(len(self.students))
@@ -190,9 +238,3 @@ class MainWindow(FluentWindow):
     def submit_homework(self, homework_id, school_id):
         subject = insertion.insert_submission(homework_id, school_id)
         request.submit_homework(school_id, subject, homework_id)
-
-
-    def on_triggered(self):
-        while True:
-            if detect_button_press():
-                self.scan()

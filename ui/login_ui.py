@@ -150,8 +150,8 @@ class LoginWindow(FluentWindow):
         with open("cache.json", "r") as file:
             token = json.load(file)['token']
             response = request.fetch_token_status(token)
-            if type(response) == dict:
-                if response['message'].endswith('successfully'):
+            if response.ok:
+                if response.json()['message'].endswith('successfully'):
                     self.redirect_to_main_window()
             elif self.EXPIRE == False:
                 self.EXPIRE = True
