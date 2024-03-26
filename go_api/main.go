@@ -54,6 +54,7 @@ func main() {
 	r.GET("/students", handlers.GetStudentsByClass)
 	r.GET("/needsub", handlers.GetNeedSub)
 	r.GET("/gethomework", handlers.GetHomeworkHandler)
+	r.GET("/subhist", handlers.SubHistHandler)
 
 	log.Fatal(r.Run("0.0.0.0:1145")) // listen and serve on 0.0.0.0:1145
 }
