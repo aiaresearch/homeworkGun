@@ -5,7 +5,7 @@ import json
 
 # if platform is windows, change the following line to your own address
 if os.name == "nt":
-    ADDR = "http://149.88.90.116:1145"
+    ADDR = "http://154.12.20.83:1145"
 else:
     ADDR = os.getenv("REQUEST_URL")
 
@@ -25,18 +25,26 @@ def fetch_student(class_id):
         return students
     
 
+import json
+import requests
+
 def fetch_login_status(username, password):
     endpoint = "/login"
     data = json.dumps({"account": username, "passwd": password})
+    
     url = f"{ADDR}{endpoint}"
+    
+    print(f"Request data: {data}")  # 打印请求的数据
+    
     try:
         response = requests.post(url, data=data)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        raise Exception(e)
+        # 打印和返回完整的响应内容
+        print(f"HTTP error occurred: {e.response.text}")
+        raise Exception(f"HTTP error occurred: {e.response.text}")
     else:
-        return response
-
+        return response.text  # 返回完整的POST结果
 
 def fetch_homeworks():
     endpoint = "/gethomework?id=30"
@@ -61,28 +69,36 @@ def fetch_homeworks():
 
 def fetch_token_status(token):
     endpoint = "/user"
-    headers = {"Authorization" : token}
+    headers = {"Authorization": token}
     url = f"{ADDR}{endpoint}"
+    
+    print(f"Request headers: {headers}")  # 打印请求的headers
+    
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        raise Exception(e)
+        print(f"HTTP error occurred: {e.response.text}")  # 打印完整的响应内容
+        raise Exception(f"HTTP error occurred: {e.response.text}")
     else:
-        return response
+        print(f"Response: {response.text}")  # 打印返回结果
+        return response  # 返回完整的GET结果
 
 
 def fetch_register_status(username, password):
     endpoint = "/register"
     data = json.dumps({"account": username, "passwd": password})
     url = f"{ADDR}{endpoint}"
+    
     try:
         response = requests.post(url, data=data)
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        raise Exception(e)
+        # 打印和返回完整的响应内容
+        print(f"HTTP error occurred: {e.response.text}")
+        raise Exception(f"HTTP error occurred: {e.response.text}")
     else:
-        return response.json()
+        return response.json()  # 返回解析后的JSON结果
 
 
 def create_homework(homework_id, subject, start_date, end_date):

@@ -167,8 +167,15 @@ class LoginWindow(FluentWindow):
         username = self.ui.lineUsername.text()
         password = self.ui.linePassword.text()
         response = request.fetch_login_status(username, password)
-        if type(response) == dict:
-            token = response['token']
+        print(f"Response from server: {response}")  # 打印返回结果
+        try:
+            response_dict = json.loads(response)  # 尝试将响应解析为字典
+        except json.JSONDecodeError as e:
+            print(f"JSON decode error: {e}")
+            response_dict = None
+
+        if isinstance(response_dict, dict):
+            token = response_dict.get('token')
             with open("cache.json", "w") as file:
                 json.dump({'token': token}, file)
             self.redirect_to_main_window()
